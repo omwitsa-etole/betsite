@@ -176,15 +176,14 @@ body{
 		</div>
 	</div>
 	<div class="main-body">
+	
 	{%if home_matches%}
 		<h3>Highest Home Odd Match</h3>
 		{%set match= home_matches%}
-		{%set m_date = "N/A"%}
-		{%for match_date in matches_date%}
-			{% if match_date[0] == match[0] %}
-				{%set m_date = match_date[1]%}
-			{%endif%}
-		{%endfor%}
+		
+		
+		{%set m_date = match[8]%}
+			
 	<div class="match-box">
 		{%set match_teams = match[2]%}
 		{% set match_teams = match_teams.replace("-", " vs ")%}
@@ -199,15 +198,11 @@ body{
 		</div>
 	</div>	
 	{%endif%}
+	
 	{%if draw_matches%}
 		<h3>Highest Draw Odd Match</h3>
 		{%set match= draw_matches%}
-		{%set m_date = "N/A"%}
-		{%for match_date in matches_date%}
-			{% if match_date[0] == match[0] %}
-				{%set m_date = match_date[1]%}
-			{%endif%}
-		{%endfor%}
+		{%set m_date = match[8]%}
 	<div class="match-box">
 		{%set match_teams = match[2]%}
 		{% set match_teams = match_teams.replace("-", " vs ")%}
@@ -225,12 +220,7 @@ body{
 	{%if away_matches%}
 		<h3>Highest Away Odd Match</h3>
 		{%set match= away_matches%}
-		{%set m_date = "N/A"%}
-		{%for match_date in matches_date%}
-			{% if match_date[0] == match[0] %}
-				{%set m_date = match_date[1]%}
-			{%endif%}
-		{%endfor%}
+		{%set m_date = match[8]%}
 	<div class="match-box">
 		{%set match_teams = match[2]%}
 		{% set match_teams = match_teams.replace("-", " vs ")%}

@@ -177,12 +177,11 @@ body{
 	</div>
 	<div class="main-body">
 	{%for match in matches%}
-		{%set m_date = "N/A"%}
-		{%set m_date = matches_date[0][1]%}
+		{%set m_date = match[8]%}
 	<div class="match-box">
 		{%set match_teams = match[2]%}
 		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
+		<span style="position: absolute;top: 0;left: 1%;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
 		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
 		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
 		</div>

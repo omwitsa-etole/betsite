@@ -12,11 +12,14 @@ from datetime import timedelta
 app = Flask(__name__)
 app.secret_key = 'app@Betting'
 
+#is_prod = os.environ.get('IS_HEROKU', None)
+#print(is_prod)
+
 def DBO():
-	db = mysql.connector.connect(host="192.185.81.65",    
-                     user="askabcry_root",         
-                     passwd="tryhackmeanddie",  
-                     db="askabcry_betting")
+	db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
+                     user=os.getenv("DB_USER"),         
+                     passwd=os.getenv("DB_PASS"),  
+                     db=os.getenv("DB_NAME"))
 
 	return db
 
@@ -61,7 +64,7 @@ def bestToday():
 			away_matches = cur.fetchone()
 		cur.execute("SELECT * FROM matches_date")
 		matches_date = cur.fetchall()
-
+		print(matches_date)
 	except Exception as e:
 		db.rollback();print(str(e))
 		pass
