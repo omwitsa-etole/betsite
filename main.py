@@ -10,7 +10,6 @@ import datetime
 from datetime import timedelta
 
 app = Flask(__name__)
-app.debug = False
 app.secret_key = 'app@Betting'
 
 def DBO():
@@ -110,5 +109,5 @@ def getMarkets(mat):
 		finally:
 			db.close()
 		return render_template("markets.html", **locals())
-
-app.run(host="0.0.0.0")
+if __name__ == "__main__":
+	app.run(host="0.0.0.0", debug=True)
