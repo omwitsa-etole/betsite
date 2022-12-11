@@ -1,0 +1,46 @@
+
+<h5>Markets</h5>
+<table style="width: 100%;">
+<tr>
+<th class="mkt">Market</th>
+<th class="odds">Odds</th>
+</tr>
+<tr>
+<td class="mkt"></td>
+<td class="odds">
+<button>1</button>
+<button>X</button>
+<button>2</button>
+</td>
+</tr>
+{%if n != 0%}
+	{%for market in markets%}
+	<tr>
+	<td class="mkt">{{market[1]}}</td>
+	<td class="odds" id="{{market[7]}}">
+	{% if (markets[2]|float < matches[3]|float) %}
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-down" aria-hidden="true" style="display: none;"></i> {{market[2]}}</button>
+	{%else%}
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[2]}}</button>
+	{%endif%}
+	{% if (markets[3]|float < matches[4]|float) %}
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-down" aria-hidden="true" style="display: none;"></i> {{market[3]|float}}</button>
+	{%else%}
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[3]}}</button>
+	{%endif%}
+	{% if (markets[4]|float < matches[5]|float) %}
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-down" aria-hidden="true" style="display: none;"></i> {{market[4]}}</button>
+	{%else%}
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[4]}}</button>
+	{%endif%}
+	
+	</td>
+	</tr>
+	{%endfor%}
+{%else%}
+<tr><td>No Data Available</td></tr>
+{%endif%}
+</table>
+<script>
+
+</script>
