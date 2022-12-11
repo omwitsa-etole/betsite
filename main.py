@@ -111,4 +111,4 @@ def getMarkets(mat):
 			db.close()
 		return render_template("markets.html", **locals())
 
-app.run(host="0.0.0.0", port=7000)
+app.run(host="0.0.0.0")
