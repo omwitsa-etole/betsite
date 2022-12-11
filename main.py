@@ -10,7 +10,7 @@ import datetime
 from datetime import timedelta
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 app.secret_key = 'app@Betting'
 
 def DBO():
