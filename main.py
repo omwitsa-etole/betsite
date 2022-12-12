@@ -16,16 +16,12 @@ is_prod = os.getenv('IS_HEROKU')
 
 
 def DBO():
-	if is_prod != None:
-		db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
-                     user=os.getenv("DB_USER"),         
-                     passwd=os.getenv("DB_PASS"),  
-                     db=os.getenv("DB_NAME"))
-	else:
-		db = mysql.connector.connect(host="localhost",    
-                     user="root",         
-                     passwd="root",  
-                     db="betting")
+
+	db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
+             user=os.getenv("DB_USER"),         
+             passwd=os.getenv("DB_PASS"),  
+             db=os.getenv("DB_NAME"))
+
 
 	return db
 
