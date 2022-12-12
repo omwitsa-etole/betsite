@@ -12,14 +12,20 @@ from datetime import timedelta
 app = Flask(__name__)
 app.secret_key = 'app@Betting'
 
-#is_prod = os.environ.get('IS_HEROKU', None)
-#print(is_prod)
+is_prod = os.getenv('IS_HEROKU')
+
 
 def DBO():
-	db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
+	if is_prod != None:
+		db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
                      user=os.getenv("DB_USER"),         
                      passwd=os.getenv("DB_PASS"),  
                      db=os.getenv("DB_NAME"))
+	else:
+		db = mysql.connector.connect(host="localhost",    
+                     user="root",         
+                     passwd="root",  
+                     db="betting")
 
 	return db
 
@@ -112,5 +118,58 @@ def getMarkets(mat):
 		finally:
 			db.close()
 		return render_template("markets.html", **locals())
+
+@app.route("/bookmaker/<book>")
+def getBookmaker(book):
+	if book:
+		book_league = book.replace("-", " / ")
+		book_league = book_league.upper()
+		league = request.args.get("league")
+		if league == None:
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s", (book,))
+				matches = cur.fetchall()
+				print(matches[0][5])
+			except Exception as e:
+				db.rollback();print(str(e))
+				pass
+			finally:
+				db.close()
+		else:
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s and league=%s", (book, league,))
+				matches = cur.fetchall()
+				
+			except Exception as e:
+				db.rollback();print(str(e))
+				pass
+			finally:
+				db.close()
+		return render_template("bookmarks.html", **locals())
+
+@app.route("/bookmaker/match/<bookmatch>")
+def BookMatch(bookmatch):
+	if bookmatch:
+		bookmark = "N/A"
+		x = bookmatch.split("-")
+		xeid = x[-1]
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM bookmark_matches WHERE xeid=%s", (xeid,))
+			matches = cur.fetchone()
+			if matches:
+				bookmark = matches[12] 
+				bookmark = bookmark.split("-")
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.close()
+		return render_template("bookmatch.html", **locals())
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)
