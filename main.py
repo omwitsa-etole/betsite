@@ -16,11 +16,24 @@ is_prod = os.getenv('IS_HEROKU')
 print(is_prod)
 
 def DBO():
-	db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
-	     user=os.getenv("DB_USER"),         
-	     passwd=os.getenv("DB_PASS"),  
-	     db=os.getenv("DB_NAME"))
-	
+	if is_prod != None:
+		db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
+		     user=os.getenv("DB_USER"),         
+		     passwd=os.getenv("DB_PASS"),  
+		     db=os.getenv("DB_NAME"))
+	else:
+		while True:
+			try:
+				db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
+				     user="askabcry_root",         # your username
+				     passwd="tryhackmeanddie",  # your password
+				     db="askabcry_betting")
+				break
+			except:
+				pass
+
+
+
 	return db
 
 
@@ -43,28 +56,27 @@ def home():
 @app.route("/best-today", methods=['GET'])
 def bestToday():
 	time_today = datetime.datetime.now() - timedelta(days=1)
-	#print(last_online)
+	print(time_today)
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
-		cur.execute("SELECT max(home_odd) FROM matches WHERE time >= %s",(time_today, ))
+		cur.execute("SELECT max(home_odd) FROM matches")
 		maxh = cur.fetchone()
 		if maxh:
 			cur.execute("SELECT * FROM matches WHERE home_odd=%s", (maxh ))
 			home_matches = cur.fetchone()
-		cur.execute("SELECT max(draw_odd) FROM matches WHERE time >= %s",(time_today, ))
+		cur.execute("SELECT max(draw_odd) FROM matches")
 		maxh = cur.fetchone()
 		if maxh:
 			cur.execute("SELECT * FROM matches WHERE draw_odd=%s", (maxh ))
 			draw_matches = cur.fetchone()
-		cur.execute("SELECT max(away_odd) FROM matches WHERE time >= %s",(time_today, ))
+		cur.execute("SELECT max(away_odd) FROM matches")
 		maxh = cur.fetchone()
 		if maxh:
 			cur.execute("SELECT * FROM matches WHERE away_odd=%s", (maxh ))
 			away_matches = cur.fetchone()
 		cur.execute("SELECT * FROM matches_date")
 		matches_date = cur.fetchall()
-		print(matches_date)
 	except Exception as e:
 		db.rollback();print(str(e))
 		pass

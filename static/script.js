@@ -19,3 +19,13 @@ function searchBook(val){
 		location.href = "/search?book="+val+"&&type="+input;		
 	}
 }
+window.onclick = function(event) {
+	if (!event.target.matches('.fa')) {
+		var x = document.getElementsByClassName('dropdown-content-search');
+		for(let i=0;i<x.length;i++){
+			if(x[i].classList.contains("show")){
+				x[i].classList.remove("show");
+			}
+		}
+	}
+}

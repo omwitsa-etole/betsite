@@ -228,14 +228,14 @@ body{
 			  <button onclick="myFunction()" class="dropbtn"><i class="fa fa-search fa-2x" aria-hidden="true"></i>
 </button>
 			  <div id="myDropdown" class="dropdown-content-search">
-			    <input type="text" placeholder="Search " id="myInput" >
+			    <input class="fa"  type="text" placeholder="Search " id="myInput" >
 			    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search in Matches</a>
 			    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search in Leagues</a>
 			    <div class="bookmark">
 			    <a href="javascript:void(0)">Search in bookmark -> </a>
 			    <div class="bookmarks">
 					<a href="javascript:void(0)" onclick="searchBook('paripesa.ng')">Paripesa</a>
-			    		<a href="javascript:void(0)" onclick="searchBook('bonanza.com')">Bet Bonanza</a>
+			    		<a href="javascript:void(0)" onclick="searchBook('betbonanza.com')">Bet Bonanza</a>
 					<a href="javascript:void(0)" onclick="searchBook('sportybet.com')">Sporty Bet</a>
 			     </div>
 			     </div>
@@ -245,8 +245,13 @@ body{
 			<div class="dropdown">
 			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
 			<div class="dropdown-content">
-			<a>Profile</a>
-			<a>Log Out</a>
+			{%if session.get("loggedIn") == None %}
+				<a>Log in</a>
+				<a>Sign Up</a>
+			{%else%}
+				<a>Profile</a>
+				<a>Log out</a>
+			{%endif%}
 			</div>
 			</div>
 		</div>
