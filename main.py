@@ -13,16 +13,14 @@ app = Flask(__name__)
 app.secret_key = 'app@Betting'
 
 is_prod = os.getenv('IS_HEROKU')
-
+print(is_prod)
 
 def DBO():
-
 	db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
-             user=os.getenv("DB_USER"),         
-             passwd=os.getenv("DB_PASS"),  
-             db=os.getenv("DB_NAME"))
-
-
+	     user=os.getenv("DB_USER"),         
+	     passwd=os.getenv("DB_PASS"),  
+	     db=os.getenv("DB_NAME"))
+	
 	return db
 
 
@@ -167,5 +165,87 @@ def BookMatch(bookmatch):
 		finally:
 			db.close()
 		return render_template("bookmatch.html", **locals())
+@app.route("/search")
+def search():
+	match = request.args.get("matches")
+	league = request.args.get("leagues")
+	book = request.args.get("book")
+	if match != None and league == None:
+		print(match)
+		if "vs" in match:
+			match = match.replace("vs", "-")
+		match = "%"+match+"%"
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM bookmark_matches where match_teams LIKE %s", (match, ))
+			matches = cur.fetchall()
+			
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.close()
+	elif league != None and match == None:
+		league = "%"+league+"%"
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM bookmark_matches where league LIKE %s", (league, ))
+			matches = cur.fetchall()
+			
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.close()
+	else:
+		if book != None:
+			old_book = book+"-football"
+			book = "%"+book+"%"
+			print(book)
+			query = request.args.get("type")
+			if query != None and query != "":
+				query = "%"+query+"%"
+				print(query)
+				try:
+					db = DBO()
+					cur = db.cursor(buffered=True)
+					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s and match_teams like %s or league like %s", (old_book, query, query, ))
+					matches = cur.fetchall()
+					print("here")
+				except Exception as e:
+					db.rollback();print(str(e))
+					pass
+				finally:
+					db.close()
+				return render_template("search.html", **locals())
+			else:
+				try:
+					db = DBO()
+					cur = db.cursor(buffered=True)
+					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark like %s", (book, ))
+					matches = cur.fetchall()
+					print("here2")
+				except Exception as e:
+					db.rollback();print(str(e))
+					pass
+				finally:
+					db.close()
+				return render_template("search.html", **locals())
+		else:
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("SELECT * FROM bookmark_matches")
+				matches = cur.fetchall()
+				
+			except Exception as e:
+				db.rollback();print(str(e))
+				pass
+			finally:
+				db.close()
+	return render_template("search.html", **locals())
+
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)

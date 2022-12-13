@@ -166,14 +166,33 @@ body{
 .top-nav-b options{
 	height: 35px;
 }
-</style>
 
+</style>
+<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+<script src="{{url_for('static', filename='script.js')}}"></script>
 </head>
 <body>
 <div class="b-ody" style="">
 	<div class="top-nav">
 		<div class="top-nav-a">
 			<h2 style="position: absolute;left: 0;color: yellow;">SureBet</h2>
+			<div class="dropdown-search">
+			  <button onclick="myFunction()" class="dropbtn"><i class="fa fa-search fa-2x" aria-hidden="true"></i>
+</button>
+			  <div id="myDropdown" class="dropdown-content-search">
+			    <input type="text" placeholder="Search " id="myInput" >
+			    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search in Matches</a>
+			    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search in Leagues</a>
+			    <div class="bookmark">
+			    <a href="javascript:void(0)">Search in bookmark -> </a>
+			    <div class="bookmarks">
+					<a href="javascript:void(0)" onclick="searchBook('paripesa.ng')">Paripesa</a>
+			    		<a href="javascript:void(0)" onclick="searchBook('bonanza.com')">Bet Bonanza</a>
+					<a href="javascript:void(0)" onclick="searchBook('sportybet.com')">Sporty Bet</a>
+			     </div>
+			     </div>
+			  </div>
+			</div>
 			<div class="dropdown">
 			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
 			<div class="dropdown-content">
@@ -197,8 +216,11 @@ body{
 	{%for match in matches%}
 		{%set m_date = match[8]%}
 	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
+		{%if '-' in match[2]%}
+			{% set match_teams = match[2].replace("-", " vs ")%}
+		{%else%}
+			{% set match_teams = match[2].replace("—", " vs ")%}
+		{%endif%}
 		<span style="position: absolute;top: 0;left: 1%;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
 		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
 		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
@@ -240,5 +262,6 @@ function toBookmark(val){
 		location.href = "{{url_for('home')}}";
 	}
 }
+
 </script>
 </html>

@@ -216,6 +216,8 @@ body{
 	text-decoration: underline;
 }
 </style>
+<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+<script src="{{url_for('static', filename='script.js')}}"></script>
 
 </head>
 <body>
@@ -223,6 +225,24 @@ body{
 	<div class="top-nav">
 		<div class="top-nav-a">
 			<h2 style="position: absolute;left: 0;color: yellow;" onclick="location.href='{{url_for("home")}}'">SureBet</h2>
+			<div class="dropdown-search">
+			  <button onclick="myFunction()" class="dropbtn"><i class="fa fa-search fa-2x" aria-hidden="true"></i>
+</button>
+			  <div id="myDropdown" class="dropdown-content-search">
+			    <input type="text" placeholder="Search " id="myInput" >
+			    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search in Matches</a>
+			    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search in Leagues</a>
+			    <div class="bookmark">
+			    <a href="javascript:void(0)">Search in bookmark -> </a>
+			    <div class="bookmarks">
+					<a href="javascript:void(0)" onclick="searchBook('paripesa.ng')">Paripesa</a>
+			    		<a href="javascript:void(0)" onclick="searchBook('bonanza.com')">Bet Bonanza</a>
+					<a href="javascript:void(0)" onclick="searchBook('sportybet.com')">Sporty Bet</a>
+			     </div>
+			     </div>
+			    
+			  </div>
+			</div>
 			<div class="dropdown">
 			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
 			<div class="dropdown-content">
@@ -241,9 +261,10 @@ body{
 		<option value="sportybet.com-football">SportyBet</option>
 		</select>
 		</div>
+		<a id="back" onclick="history.go(-1)" style="float: left;cursor: pointer;margin-left: 1%;"><-Back</a>
 	</div>
 	<div class="main-body">
-		<a id="back" onclick="history.go(-1)" style="float: left;cursor: pointer;margin-left: 1%;"><-Back</a>
+		
 		{%set m_date = "N/A"%}
 		{% if match_date[0] == matches[0] %}
 			{%set m_date = match_date[1]%}

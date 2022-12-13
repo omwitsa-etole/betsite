@@ -7,7 +7,7 @@
     <meta name="description" content="">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://kit.fontawesome.com/c63faa1f51.js" crossorigin="anonymous"></script>
-<title>Best Today</title>
+<title>HOME</title>
 <style src=""></style>
 <style>
 body{
@@ -166,19 +166,16 @@ body{
 .top-nav-b options{
 	height: 35px;
 }
-#back:hover{
-	color: yellow;
-	text-decoration: underline;
-}
+
 </style>
 <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 <script src="{{url_for('static', filename='script.js')}}"></script>
 </head>
 <body>
-<div class="b-ody" >
+<div class="b-ody" style="">
 	<div class="top-nav">
 		<div class="top-nav-a">
-			<h2 style="position: absolute;left: 0;color: yellow;" onclick="location.href='{{url_for("home")}}'">BetSite</h2>
+			<h2 style="position: absolute;left: 0;color: yellow;">SureBet</h2>
 			<div class="dropdown-search">
 			  <button onclick="myFunction()" class="dropbtn"><i class="fa fa-search fa-2x" aria-hidden="true"></i>
 </button>
@@ -218,64 +215,28 @@ body{
 		<a id="back" onclick="history.go(-1)" style="float: left;cursor: pointer;margin-left: 1%;"><-Back</a>
 	</div>
 	<div class="main-body">
-	
-	{%if home_matches%}
-		<h3>Highest Home Odd Match</h3>
-		{%set match= home_matches%}
-		
-		
-		{%set m_date = match[8]%}
-			
-	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
-		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
-		</div>
-		<div class="bet-odds" id="{{match[10]}}">
-		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
-		</div>
-	</div>	
-	{%endif%}
-	
-	{%if draw_matches%}
-		<h3>Highest Draw Odd Match</h3>
-		{%set match= draw_matches%}
-		{%set m_date = match[8]%}
-	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
-		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
-		</div>
-		<div class="bet-odds" id="{{match[10]}}">
-		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
-		</div>
-	</div>	
-	{%endif%}
-	{%if away_matches%}
-		<h3>Highest Away Odd Match</h3>
-		{%set match= away_matches%}
-		{%set m_date = match[8]%}
-	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
-		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
-		</div>
-		<div class="bet-odds" id="{{match[10]}}">
-		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
-		</div>
-	</div>	
+	{%if matches%}
+		{%for match in matches%}
+			{%set m_date = match[8]%}
+			{%set m_date = match[2]%}
+		<div class="match-box">
+			{%set bookmaker = match[12].split("-")%}
+			{%if '-' in match[5]%}
+				{% set match_teams = match[5].replace("-", " vs ")%}
+			{%else%}
+				{% set match_teams = match[5].replace("—", " vs ")%}
+			{%endif%}
+			<span style="position: absolute;top: 0;left: 1%;font-size: 18px;width: 100%;height: 30px;overflow: hidden;text-align: justify;">Time: {{match[3]}} <i style="margin-left: 6px;"> Date: {{m_date}}</i><a href='{{url_for("getBookmaker", book=match[12])}}' style="float: right;margin-right: 20px;text-align: right;">Bookmaker: {{bookmaker[0]}}</a></span>
+			<div class="match" onclick="location.href='{{url_for("BookMatch", bookmatch=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+			<a href="{{url_for('BookMatch', bookmatch=match[4])}}">{{match_teams}}</a>
+			</div>
+			<div class="bet-odds" id="{{match[11]}}">
+			<button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}</button>
+			<button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}</button>
+			<button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}</button>
+			</div>
+		</div>	
+		{%endfor%}
 	{%endif%}
 	</div>
 </div>
@@ -287,9 +248,7 @@ function selectB(el, le){
 	var xs = s.getElementsByTagName("button");
 	if(el.classList.contains("active")){
 		el.classList.remove("active");
-		
-	}else{
-		el.classList.add("active");
+		return true;
 	}
 	for(let i=0;i<xs.length;i++){
 		if(xs[i].classList.contains("active")){
@@ -307,6 +266,16 @@ function toBookmark(val){
 		location.href = '/bookmaker/'+val;
 	}else{
 		location.href = "{{url_for('home')}}";
+	}
+}
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+function searchQuery(type){
+	var input = document.getElementById("myInput").value;
+	if(input.length > 0){
+		input = input.replace(" ", "%20");
+		location.href = "/search?"+type+"="+input;
 	}
 }
 </script>
