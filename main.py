@@ -60,23 +60,22 @@ def bestToday():
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
-		cur.execute("SELECT max(home_odd) FROM matches")
+		cur.execute("SELECT max(home_odd) FROM bookmark_matches")
 		maxh = cur.fetchone()
 		if maxh:
-			cur.execute("SELECT * FROM matches WHERE home_odd=%s", (maxh ))
+			cur.execute("SELECT * FROM bookmark_matches WHERE home_odd=%s", (maxh ))
 			home_matches = cur.fetchone()
-		cur.execute("SELECT max(draw_odd) FROM matches")
+		cur.execute("SELECT max(draw_odd) FROM bookmark_matches")
 		maxh = cur.fetchone()
 		if maxh:
-			cur.execute("SELECT * FROM matches WHERE draw_odd=%s", (maxh ))
+			cur.execute("SELECT * FROM bookmark_matches WHERE draw_odd=%s", (maxh ))
 			draw_matches = cur.fetchone()
-		cur.execute("SELECT max(away_odd) FROM matches")
+		cur.execute("SELECT max(away_odd) FROM bookmark_matches")
 		maxh = cur.fetchone()
 		if maxh:
-			cur.execute("SELECT * FROM matches WHERE away_odd=%s", (maxh ))
+			cur.execute("SELECT * FROM bookmark_matches WHERE away_odd=%s", (maxh ))
 			away_matches = cur.fetchone()
-		cur.execute("SELECT * FROM matches_date")
-		matches_date = cur.fetchall()
+		
 	except Exception as e:
 		db.rollback();print(str(e))
 		pass
@@ -258,6 +257,26 @@ def search():
 			finally:
 				db.close()
 	return render_template("search.html", **locals())
+
+@app.route("/markets/bookmaker/<match>")
+def getBookMarkets(match):
+	if match:
+		match_teams = match.replace(" - ", "-")
+		
+		match_teams = "%" + match_teams + "%"
+		match = "%"+match+"%"
+		
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s", (match, match_teams, ))
+			markets = cur.fetchall()
+		except:
+			print(str(e))
+			pass
+		finally:
+			db.close()
+		return render_template("bookmarkets.html", **locals())
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)

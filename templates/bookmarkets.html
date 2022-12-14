@@ -1,0 +1,35 @@
+
+<h5>Markets</h5>
+<table style="width: 100%;">
+<tr>
+<th class="mkt">Market</th>
+<th class="odds">Odds</th>
+</tr>
+<tr>
+<td class="mkt"></td>
+<td class="odds">
+<button>1</button>
+<button>X</button>
+<button>2</button>
+</td>
+</tr>
+{%if n != 0%}
+	{%for market in markets%}
+	<tr>
+	<td class="mkt">{{market[12]}}</td>
+	<td class="odds" id="{{market[10]}}">
+	
+		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[6]}}</button>
+	<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[7]}}</button>
+	<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[8]}}</button>
+	
+	</td>
+	</tr>
+	{%endfor%}
+{%else%}
+<tr><td>No Data Available</td></tr>
+{%endif%}
+</table>
+<script>
+
+</script>

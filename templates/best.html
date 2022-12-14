@@ -229,56 +229,59 @@ body{
 		{%set match= home_matches%}
 		
 		
-		{%set m_date = match[8]%}
+		{%set m_date = match[2]%}
 			
 	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
-		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
+		{% set match_teams = match[5].replace("-", " vs ")%}
+		<span style="position: absolute;top: 0;left: 0;width: 100%;font-size: 18px;">Time: {{match[3]}} <i style="margin-left: 20px;float: left;"> Date: {{m_date}}</i><a href="{{url_for('getBookmaker', book=match[12])}}" style="float: right;margin-right: 6px;text-align: right;">Bookmaker: {{match[12]}}</a></span>
+		<div class="match" onclick="location.href='{{url_for("BookMatch", bookmatch=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+		<a href='{{url_for("BookMatch", bookmatch=match[4])}}'>{{match_teams}}</a>
 		</div>
 		<div class="bet-odds" id="{{match[10]}}">
-		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}</button>
 		</div>
 	</div>	
 	{%endif%}
 	
 	{%if draw_matches%}
 		<h3>Highest Draw Odd Match</h3>
-		{%set match= draw_matches%}
-		{%set m_date = match[8]%}
+		{%set match= home_matches%}
+		
+		
+		{%set m_date = match[2]%}
+			
 	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
-		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
+		{% set match_teams = match[5].replace("-", " vs ")%}
+		<span style="position: absolute;top: 0;left: 0;width: 100%;font-size: 18px;">Time: {{match[3]}} <i style="margin-left: 20px;float: left;"> Date: {{m_date}}</i><a href="{{url_for('getBookmaker', book=match[12])}}" style="float: right;margin-right: 6px;text-align: right;">Bookmaker: {{match[12]}}</a></span>
+		<div class="match" onclick="location.href='{{url_for("BookMatch", bookmatch=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+		<a href='{{url_for("BookMatch", bookmatch=match[4])}}'>{{match_teams}}</a>
 		</div>
 		<div class="bet-odds" id="{{match[10]}}">
-		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}</button>
 		</div>
 	</div>	
 	{%endif%}
 	{%if away_matches%}
 		<h3>Highest Away Odd Match</h3>
-		{%set match= away_matches%}
-		{%set m_date = match[8]%}
+		{%set match= home_matches%}
+		
+		
+		{%set m_date = match[2]%}
+			
 	<div class="match-box">
-		{%set match_teams = match[2]%}
-		{% set match_teams = match_teams.replace("-", " vs ")%}
-		<span style="position: absolute;top: 0;left: 0;font-size: 18px;">Time: {{match[1]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
-		<div class="match" onclick="location.href='{{url_for("getMatch", match=match[2])}}-{{match[0]}}'" style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('getMatch', match=match[2])}}-{{match[0]}}">{{match_teams}}</a>
+		{% set match_teams = match[5].replace("-", " vs ")%}
+		<span style="position: absolute;top: 0;left: 0;width: 100%;font-size: 18px;">Time: {{match[3]}} <i style="margin-left: 20px;float: left;"> Date: {{m_date}}</i><a href="{{url_for('getBookmaker', book=match[12])}}" style="float: right;margin-right: 6px;text-align: right;">Bookmaker: {{match[12]}}</a></span>
+		<div class="match" onclick="location.href='{{url_for("BookMatch", bookmatch=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+		<a href='{{url_for("BookMatch", bookmatch=match[4])}}'>{{match_teams}}</a>
 		</div>
 		<div class="bet-odds" id="{{match[10]}}">
-		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
-		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}</button>
+		<button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}</button>
 		</div>
 	</div>	
 	{%endif%}
