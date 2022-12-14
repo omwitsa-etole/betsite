@@ -78,3 +78,56 @@
 	color: yellow;
 	text-decoration: underline;
 }
+.bet-odds{
+	position: absolute;bottom: 1%;width: 100%;
+	left: 0;float: left;text-align: center;
+	height: 40%;
+	
+}
+.b-odds{
+	position: relative;
+	height: 100%;
+	display: inline-block;
+	width: 27%;
+	margin-left: 3.5%;
+	float: left;
+	text-align: left;
+}
+.odd-mkt{
+	position: absolute;
+	bottom: 0;
+	left: 0;	
+	text-align: center;
+
+}
+.b-odds button{
+	position: absolute;
+	top: 0;
+	display: inline;
+	width: 99%;
+	border:none;
+	border-radius: 5px;
+	
+	height: 80%;
+	cursor: pointer;
+}
+.b-odds button:hover{
+	background: #111;
+	color: white;
+}
+.odds{
+	width: 100%;
+	height: 35px;
+}
+.odds button{
+	border:none;
+	border-radius: 5px;
+	cursor: pointer;
+	width: 27%;
+	margin-left: 2%;
+	height: 99%;
+}
+.odds button:hover{
+	background: #111;
+	color: white;
+}

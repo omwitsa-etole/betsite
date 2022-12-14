@@ -15,18 +15,52 @@
 </tr>
 {%if n != 0%}
 	{%for market in markets%}
-	<tr>
-	<td class="mkt">{{market[12]}}</td>
-	<td class="odds" id="{{market[10]}}">
-	
-		<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[6]}}</button>
-	<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[7]}}</button>
-	<button onclick="selectB(this, this.parentElement.id)"> <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[8]}}</button>
-	
-	</td>
-	</tr>
-	{%endfor%}
+			<tr>
+			{%set mkt=market[12].split("-")%}
+			<td class="mkt">{{mkt[0]}}</td>
+			<td class="odds" id="{{market[10]}}">
+			
+			{%if market[6] == best_home|string%}
+			<button class="active" onclick="selectB(this, this.parentElement.id)">
+			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[6]}}</button>
+			{%if market[7] == best_draw|string%}
+				<button class="active" onclick="selectB(this, this.parentElement.id)">
+			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+			{%endif%}  <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[7]}}</button>
+			{%if market[8] == best_away|string%}
+				<button class="active" onclick="selectB(this, this.parentElement.id)">
+			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[8]}}</button>
+			
+			</td>
+			</tr>
+			{%endfor%}
+			{%for market in other_markets%}
+			<tr>
+			{%set mkt=market[2]%}
+			<td class="mkt">{{mkt}}</td>
+			<td class="odds" id="{{market[8]}}">
+			{%if market[3] == best_home|string%}
+				<button class="active" onclick="selectB(this, this.parentElement.id)">
+			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[3]}}</button>
+			{%if market[4] == best_draw|string%}
+				<button class="active" onclick="selectB(this, this.parentElement.id)">
+			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+			{%endif%}  <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[4]}}</button>
+			{%if market[5] == best_away|string%}
+				<button class="active" onclick="selectB(this, this.parentElement.id)">
+			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[5]}}</button>
+			
+			</td>
+			</tr>
+			{%endfor%}
+
 {%else%}
+	
+	
 <tr><td>No Data Available</td></tr>
 {%endif%}
 </table>
