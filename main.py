@@ -194,6 +194,8 @@ def search():
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM home_matches where match_teams LIKE %s", (match, ))
+			home_matches = cur.fetchall()
 			cur.execute("SELECT * FROM bookmark_matches where match_teams LIKE %s", (match, ))
 			matches = cur.fetchall()
 			
@@ -203,10 +205,13 @@ def search():
 		finally:
 			db.close()
 	elif league != None and match == None:
-		league = "%"+league+"%"
+		league = "%"+league+" %"
+		ll = league.replace(" ", "-")
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM home_matches where league LIKE %s or league like %s", (league, ll, ))
+			home_matches = cur.fetchall()
 			cur.execute("SELECT * FROM bookmark_matches where league LIKE %s", (league, ))
 			matches = cur.fetchall()
 			
@@ -219,14 +224,14 @@ def search():
 		if book != None:
 			old_book = book+"-football"
 			book = "%"+book+"%"
-			print(book)
 			query = request.args.get("type")
 			if query != None and query != "":
 				query = "%"+query+"%"
-				print(query)
 				try:
 					db = DBO()
 					cur = db.cursor(buffered=True)
+					cur.execute("SELECT * FROM home_matches where bookmark=%s and match_teams like %s or league like %s", (old_book, query, query,))
+					home_matches = cur.fetchall()
 					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s and match_teams like %s or league like %s", (old_book, query, query, ))
 					matches = cur.fetchall()
 					print("here")
@@ -240,9 +245,10 @@ def search():
 				try:
 					db = DBO()
 					cur = db.cursor(buffered=True)
+					cur.execute("SELECT * FROM home_matches WHERE bookmark like %s", (book, ))
+					home_matches = cur.fetchall()
 					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark like %s", (book, ))
 					matches = cur.fetchall()
-					print("here2")
 				except Exception as e:
 					db.rollback();print(str(e))
 					pass
@@ -290,9 +296,12 @@ def gethomeMatch(match):
 				match = match.replace("wanderers", "")
 			if "hotspur" in match:
 				match = match.replace("hotspur", "")
+			if "lfc" in match:
+				match = match.replace("lfc", "")
 			
 			#print(match)
 			prev_match = prev_match.split("-")
+			match_bd = prev_match
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
 			prev_match = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][1:3]+"%"
 			prev_match_d = prev_match.replace("-", " - ")
@@ -300,12 +309,17 @@ def gethomeMatch(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
+			match_bb = match_bd[1].split(" ")
+			match_bb = match_bb[1]
+			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
+			match_bb = match_b.replace(" - ", "-")
 			matchl = match_d[1].split(" ")
 			match_t = "%"+match_d[0] + " - "+ matchl[1]+"%"
 			match_d = match_t.replace(" ", "")
 			match = "%"+match+"%"
 			match_t = match_d.replace("-", " - ")
-			#print(match_d)
+			#print(match_b)
+			#print(match_bb)
 			#print(match_t)
 			#print(prev_match_t)
 			best_home = None
@@ -313,13 +327,13 @@ def gethomeMatch(match):
 			best_draw = None
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
 			markets = cur.fetchall()
-			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
 			other_markets = cur.fetchall()
-			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
 			match_odds = cur.fetchone()
-			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
 			book_odds = cur.fetchone()
 			#print(match_odds)
 			#print(book_odds)
@@ -369,9 +383,14 @@ def getBookMarkets(match):
 				match = match.replace("hotspur", "")
 			if "town" in match:
 				match = match.replace("town", "")
+			if "lfc" in match:
+				match = match.replace("lfc", "")
+			if "fc" in match:
+				match = match.replace("fc", "")
 			
 			#print(match)
 			prev_match = prev_match.split("-")
+			match_bd = prev_match
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
 			prev_match = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][1:3]+"%"
 			prev_match_d = prev_match.replace("-", " - ")
@@ -380,26 +399,52 @@ def getBookMarkets(match):
 			match_teams = match.replace(" - ", "-")
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
-			match_d = match_d.split("-")
+			match_d = match_d.split("-") 
+			match_bb = match_bd[1].split(" ")
+			match_bb = match_bb[1]
+			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
+			match_bb = match_b.replace(" - ", "-")
 			matchl = match_d[1].split(" ")
 			match_t = "%"+match_d[0] + " - "+ matchl[1]+"%"
 			match_d = match_t.replace(" ", "")
 			match = "%"+match+"%"
 			match_t = match_d.replace("-", " - ")
-			#print(match_d)
+			#print(match_b)
+			#print(match_bb)
+			#print(match_t)
+			#print(prev_match_t)
+			best_home = None
+			best_away = None
+			best_draw = None
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
+			markets = cur.fetchall()
+			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
+			other_markets = cur.fetchall()
+			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
+			match_odds = cur.fetchone()
+			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
+			book_odds = cur.fetchone()
+			matchl = match_d[1].split(" ")
+			match_t = "%"+match_d[0] + " - "+ matchl[1]+"%"
+			match_d = match_t.replace(" ", "")
+			match = "%"+match+"%"
+			match_t = match_d.replace("-", " - ")
+			print(match_b)
 			#print(match_t)
 			best_home = None
 			best_away = None
 			best_draw = None
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b ))
 			markets = cur.fetchall()
-			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, ))
 			other_markets = cur.fetchall()
-			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, ))
 			match_odds = cur.fetchone()
-			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t, ))
+			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, ))
 			book_odds = cur.fetchone()
 			#print(match_odds)
 			#print(book_odds[0])

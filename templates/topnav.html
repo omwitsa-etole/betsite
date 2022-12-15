@@ -1,23 +1,25 @@
+<div class="dropdown-search">
+  <div id="myDropdown" class="dropdown-content-search">
+    <input class="" type="text" placeholder="Search " id="myInput" >
+    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search in Matches</a>
+    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search in Leagues</a>
+    <div class="bookmark">
+    <a href="javascript:void(0)">Search in bookmark <i class="fa fa-caret-down" aria-hidden="true" style="float: right;margin-right: 10px;"></i></a>
+    <div class="bookmarks">
+		<a href="javascript:void(0)" onclick="searchBook('paripesa.ng')">Paripesa</a>
+    		<a href="javascript:void(0)" onclick="searchBook('betbonanza.com')">Bet Bonanza</a>
+		<a href="javascript:void(0)" onclick="searchBook('sportybet.com')">Sporty Bet</a>
+		<a href="javascript:void(0)" onclick="searchBook('suprabets.com')">Supra Bet</a>
+		<a href="javascript:void(0)" onclick="searchBook('dafabet.com')">Dafa Bet</a>
+		<a href="javascript:void(0)" onclick="searchBook('unibet.com')">UniBet</a>
+     </div>
+     </div>
+</div>
+</div>
 <div class="top-nav-a">
 			<h2 style="position: absolute;left: 0;color: yellow;">SureBet</h2>
-			<div class="dropdown-search">
-			  <button onclick="myFunction()" class="dropbtn"><i class="fa fa-search fa-2x" aria-hidden="true"></i>
-</button>
-			  <div id="myDropdown" class="dropdown-content-search">
-			    <input class="fa " type="text" placeholder="Search " id="myInput" >
-			    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search in Matches</a>
-			    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search in Leagues</a>
-			    <div class="bookmark">
-			    <a href="javascript:void(0)">Search in bookmark -> </a>
-			    <div class="bookmarks">
-					<a href="javascript:void(0)" onclick="searchBook('paripesa.ng')">Paripesa</a>
-			    		<a href="javascript:void(0)" onclick="searchBook('betbonanza.com')">Bet Bonanza</a>
-					<a href="javascript:void(0)" onclick="searchBook('sportybet.com')">Sporty Bet</a>
-					<a href="javascript:void(0)" onclick="searchBook('suprabets.com')">Supra Bet</a>
-			     </div>
-			     </div>
-			  </div>
-			</div>
+			
+			
 			<div class="dropdown">
 			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
 			<div class="dropdown-content">
@@ -40,6 +42,8 @@
 		<option value="betbonanza.com-football">BetBonanza</option>
 		<option value="sportybet.com-football">SportyBet</option>
 		<option value="suprabets.com">SupraBets</option>
+		<option value="dafabet.com">Dafabet</option>
+		<option value="unibet.com-football">Unibet</option>
 		</select>
 		</div>
 <a id="back" onclick="history.go(-1)" style="float: left;cursor: pointer;margin-left: 1%;"><-Back</a>

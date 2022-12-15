@@ -177,6 +177,28 @@ body{
 		
 	</div>
 	<div class="main-body">
+	{%if home_matches%}
+		{%for match in home_matches%}
+			{%set m_date = match[2]%}
+		<div class="match-box">
+			
+			{%if '-' in match[5]%}
+				{% set match_teams = match[5].replace("-", " vs ")%}
+			{%else%}
+				{% set match_teams = match[5].replace("—", " vs ")%}
+			{%endif%}
+			<span style="position: absolute;top: 0;left: 1%;font-size: 18px;width: 100%;height: 30px;overflow: hidden;text-align: justify;">Time: {{match[3]}} <i style="margin-left: 6px;"> Date: {{m_date}}</i><a style="float: right;margin-right: 20px;text-align: right;">Bookmaker: Home </a></span>
+			<div class="match" onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+			<a href="{{url_for('gethomeMatch', match=match[4])}}">{{match_teams}}</a>
+			</div>
+			<div class="bet-odds" id="{{match[0]}}">
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}<p class="odd-mkt">{{match[13]}}</p></button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}<p class="odd-mkt">{{match[14]}}</p></button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}<p class="odd-mkt">{{match[15]}}</p></button></span>
+			</div>
+		</div>	
+		{%endfor%}
+	{%endif%}
 	{%if matches%}
 		{%for match in matches%}
 			{%set m_date = match[8]%}
