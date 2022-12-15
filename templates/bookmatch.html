@@ -267,7 +267,7 @@ body{
 </div>
 </body>
 <script>
-fetch('{{url_for("getBookMarkets", match=match_teams)}}')
+fetch('{{url_for("gethomeMatch", match=bookmatch)}}')
     .then(function(response) {
         return response.text()
 	hideloader();

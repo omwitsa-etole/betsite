@@ -36,6 +36,12 @@ function searchBook(val){
 		location.href = "/search?book="+val+"&&type="+input;		
 	}
 }
+function searchBookmark(val){
+	var input = document.getElementById("myInput").value;
+	if(val != "" && val.length > 0){
+		location.href = "/search?bookmark="+val+"&&matches="+input;		
+	}
+}
 window.onclick = function(event) {
 	if (!event.target.matches('.fa')) {
 		var x = document.getElementsByClassName('dropdown-content-search');
@@ -45,4 +51,10 @@ window.onclick = function(event) {
 			}
 		}
 	}
+}
+function showBookmakers(){
+	var x = document.getElementById("bookmarks");
+	if(x.style.display == 'block'){
+		x.style.display = 'none';
+	}else{ x.style.display = 'block';}
 }

@@ -177,6 +177,29 @@ body{
 		
 	</div>
 	<div class="main-body">
+	{%if book_matches%}
+		{%for match in book_matches%}
+		<div class="match-box">
+			{%set bookmaker = match[2]%}
+			{%if '-' in match[1]%}
+				{% set match_teams = match[1].replace("-", " vs ")%}
+			{%else%}
+				{% set match_teams = match[1].replace("—", " vs ")%}
+			{%endif%}
+			{%set mt = match_teams.lower().replace(" ", "")%}
+			{%set match_url = mt.replace("vs", "-")+"-"+match[0]%}
+			<span style="position: absolute;top: 0;left: 1%;font-size: 18px;width: 100%;height: 30px;overflow: hidden;text-align: justify;">Time: <i style="margin-left: 6px;"> Date: </i><a style="float: right;margin-right: 20px;text-align: right;">Bookmaker: {{bookmaker}}</a></span>
+			<div class="match" onclick="location.href='/search?bookmark={{bookmaker}}&&matches={{match_teams.replace("vs", "-")}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+			<a href='/search?bookmark={{bookmaker}}&&matches={{match_teams.replace(" vs ", "-")}}'>{{match_teams}}</a>
+			</div>
+			<div class="bet-odds" id="{{match[11]}}">
+			<button onclick="selectB(this, this.parentElement.id)">(1) {{match[3]}}</button>
+			<button onclick="selectB(this, this.parentElement.id)">(X) {{match[4]}}</button>
+			<button onclick="selectB(this, this.parentElement.id)">(2) {{match[5]}}</button>
+			</div>
+		</div>	
+		{%endfor%}
+	{%endif%}
 	{%if home_matches%}
 		{%for match in home_matches%}
 			{%set m_date = match[2]%}

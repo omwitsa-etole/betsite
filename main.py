@@ -167,14 +167,20 @@ def BookMatch(bookmatch):
 		bookmark = "N/A"
 		x = bookmatch.split("-")
 		xeid = x[-1]
+		print(x)
+		mt = "%"+x[0]+"-"+x[1]+"%"
+		md = mt.replace("-", " - ")
+		print(mt)
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmark_matches WHERE xeid=%s", (xeid,))
+			cur.execute("SELECT * FROM bookmark_matches WHERE xeid=%s or match_teams like %s or match_teams like %s", (xeid,mt,md,))
 			matches = cur.fetchone()
 			if matches:
 				bookmark = matches[12] 
 				bookmark = bookmark.split("-")
+				matchteams = matches[5]
+			
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
@@ -186,8 +192,8 @@ def search():
 	match = request.args.get("matches")
 	league = request.args.get("leagues")
 	book = request.args.get("book")
-	if match != None and league == None:
-		print(match)
+	bookmark = request.args.get("bookmark")
+	if match != None and league == None and bookmark == None:
 		if "vs" in match:
 			match = match.replace("vs", "-")
 		match = "%"+match+"%"
@@ -215,6 +221,23 @@ def search():
 			cur.execute("SELECT * FROM bookmark_matches where league LIKE %s", (league, ))
 			matches = cur.fetchall()
 			
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.close()
+	elif bookmark != None and match != None:
+		if "vs" in match:
+			match = match.replace("vs", "-")
+		match = "%"+match+"%"
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM bookmakers where bookmark=%s and match_teams LIKE %s", (bookmark, match, ))
+			book_matches = cur.fetchall()
+			cur.execute("SELECT * FROM bookmakers where id is null")
+			home_matches = cur.fetchall()
+			matches = home_matches
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
