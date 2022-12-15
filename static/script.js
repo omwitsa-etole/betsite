@@ -4,9 +4,7 @@ $(document).ready(function(){
 		return response.text()
 		hideloader();
 	    })
-	    .then(function(html) {
-	     
-
+	    .then(function(html) {    
 		document.getElementById("top-nav").innerHTML = html;
 		
 	    })
@@ -57,4 +55,7 @@ function showBookmakers(){
 	if(x.style.display == 'block'){
 		x.style.display = 'none';
 	}else{ x.style.display = 'block';}
+}
+function hideloader() {
+    document.getElementById('loading').style.display = 'none';
 }

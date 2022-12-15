@@ -386,14 +386,17 @@ def gethomeMatch(match):
 @app.route("/bookmaker/match/markets/<match>")
 def getBookMarkets(match):
 	if match:
+		print(match)
 		try:
 			match = match.replace("vs", "-")
 		except:
 			pass
 		try:
+			matchteams = match
+			
 			match = match.lower()
-			match_check = match.split("-")
 			prev_match = match
+			match_check = match.split("-")
 			if "city" in match_check[0]:
 				match = match.replace("city", "")
 			if "wolverhampton" in match:
@@ -404,12 +407,8 @@ def getBookMarkets(match):
 				match = match.replace("wanderers", "")
 			if "hotspur" in match:
 				match = match.replace("hotspur", "")
-			if "town" in match:
-				match = match.replace("town", "")
 			if "lfc" in match:
 				match = match.replace("lfc", "")
-			if "fc" in match:
-				match = match.replace("fc", "")
 			
 			#print(match)
 			prev_match = prev_match.split("-")
@@ -417,12 +416,10 @@ def getBookMarkets(match):
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
 			prev_match = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][1:3]+"%"
 			prev_match_d = prev_match.replace("-", " - ")
-			#print(prev_match)
-			#print(prev_match_d)
 			match_teams = match.replace(" - ", "-")
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
-			match_d = match_d.split("-") 
+			match_d = match_d.split("-")
 			match_bb = match_bd[1].split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
@@ -449,28 +446,10 @@ def getBookMarkets(match):
 			match_odds = cur.fetchone()
 			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
 			book_odds = cur.fetchone()
-			matchl = match_d[1].split(" ")
-			match_t = "%"+match_d[0] + " - "+ matchl[1]+"%"
-			match_d = match_t.replace(" ", "")
-			match = "%"+match+"%"
-			match_t = match_d.replace("-", " - ")
-			print(match_b)
-			#print(match_t)
-			best_home = None
-			best_away = None
-			best_draw = None
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b ))
-			markets = cur.fetchall()
-			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, ))
-			other_markets = cur.fetchall()
-			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, ))
-			match_odds = cur.fetchone()
-			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, ))
-			book_odds = cur.fetchone()
 			#print(match_odds)
-			#print(book_odds[0])
+			#print(book_odds)
+			#if match_odds and book_odds:
+			#print("here")
 			if match_odds[0] is not None and book_odds[0] is None:
 				best_home = match_odds[0]
 				best_draw = match_odds[1]
@@ -483,6 +462,7 @@ def getBookMarkets(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
+			
 			#print(best_away)
 		except Exception as e:
 			db.rollback();print(str(e))

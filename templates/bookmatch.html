@@ -221,7 +221,7 @@ body{
 </head>
 <body>
 <div class="b-ody" >
-	<div class="top-nav id="top-nav">
+	<div class="top-nav" id="top-nav">
 	</div>
 	<div class="main-body">
 		<h3>BookMaker : {{bookmark[0]}}</h3>
@@ -265,9 +265,11 @@ body{
 
 	</div>
 </div>
+<script src="{{url_for('static', filename='script.js')}}"></script>
 </body>
 <script>
-fetch('{{url_for("gethomeMatch", match=bookmatch)}}')
+
+fetch('{{url_for("getBookMarkets", match=matchteams)}}')
     .then(function(response) {
         return response.text()
 	hideloader();
