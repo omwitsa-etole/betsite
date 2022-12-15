@@ -1,3 +1,20 @@
+$(document).ready(function(){
+	fetch('/topnav')
+	    .then(function(response) {
+		return response.text()
+		hideloader();
+	    })
+	    .then(function(html) {
+	     
+
+		document.getElementById("top-nav").innerHTML = html;
+		
+	    })
+	    .catch(function(err) {  
+		alert('Failed to fetch page: ', err);
+		  
+	    });
+})
 function myFunction() {
 	var x = document.getElementById("myDropdown");
 	if(x.classList.contains("show")){

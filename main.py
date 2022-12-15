@@ -52,6 +52,10 @@ def home():
 		db.close()
 	return render_template("home.html", **locals())
 
+@app.route("/topnav")
+def getNav():
+	return render_template("topnav.html", **locals())
+
 @app.route("/best-today", methods=['GET'])
 def bestToday():
 	time_today = datetime.datetime.now() - timedelta(days=1)
@@ -137,7 +141,7 @@ def getBookmaker(book):
 				cur = db.cursor(buffered=True)
 				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s", (book,))
 				matches = cur.fetchall()
-				print(matches[0][5])
+				#print(matches[0][5])
 			except Exception as e:
 				db.rollback();print(str(e))
 				pass
@@ -280,8 +284,8 @@ def gethomeMatch(match):
 				match = match.replace("city", "")
 			if "wolverhampton" in match:
 				match = match.replace("wolverhampton", "wolves")
-			if "united" in match:
-				match = match.replace("united", "utd")
+			if "utd" in match:
+				match = match.replace("utd", "united")
 			if "wanderers" in match:
 				match = match.replace("wanderers", "")
 			if "hotspur" in match:
@@ -357,12 +361,14 @@ def getBookMarkets(match):
 				match = match.replace("city", "")
 			if "wolverhampton" in match:
 				match = match.replace("wolverhampton", "wolves")
-			if "united" in match:
-				match = match.replace("united", "utd")
+			if "utd" in match:
+				match = match.replace("utd", "united")
 			if "wanderers" in match:
 				match = match.replace("wanderers", "")
 			if "hotspur" in match:
 				match = match.replace("hotspur", "")
+			if "town" in match:
+				match = match.replace("town", "")
 			
 			#print(match)
 			prev_match = prev_match.split("-")
