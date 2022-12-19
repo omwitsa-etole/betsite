@@ -60,7 +60,7 @@ class Combine:
 		finally:
 			db.commit()
 			db.close()
-			
+		print(markets)
 		allcombinations = list(itertools.product(markets))
 		print(allcombinations)
 		count = 0
