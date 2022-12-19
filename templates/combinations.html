@@ -1,0 +1,20 @@
+{%if session.get("user") != None%}
+	<div class="bets">
+	Odds
+	<div class="res">
+	~1 >= 1
+	</div>
+	</div>
+	{%for combination in combinations%}
+	<div class="bets">
+	<button>{{combination[2]}}</button>
+	<button>{{combination[3]}}</button>
+	<button>{{combination[4]}}</button>
+	<div class="res">
+	{{combination[5]}}
+	</div>
+	</div>
+	{%endfor%}
+{%else%}
+<div ><center><h6>Login to view combination results</h6></center></div>
+{%endif%}

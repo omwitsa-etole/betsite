@@ -8,12 +8,15 @@ import os
 import mysql.connector
 import datetime
 from datetime import timedelta
+import itertools
 
 app = Flask(__name__)
 app.secret_key = 'app@Betting'
 
 is_prod = os.getenv('IS_HEROKU')
 print(is_prod)
+
+
 
 def DBO():
 	if is_prod != None:
@@ -36,9 +39,60 @@ def DBO():
 
 	return db
 
+def calc(a, b, c):
+	v1 = 1/a
+	v2 = 1/b
+	v3 = 1/b
+	return v1+v2+v3
+
+class Combine:
+	def __init__(self, markets, user):
+		print(markets)
+		self.user  = user
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("delete from user_combination where user=%s", (self.user,))
+		except Exception as e:
+			db.rollback()
+			print(str(e))
+			pass
+		finally:
+			db.commit()
+			db.close()
+			
+		self.markets = markets
+		all_combinations = list(itertools.product(*self.markets))
+		for y in all_combinations:
+			try:
+				res = []
+				a = y[0]
+				b = y[1]
+				c = y[2]
+				val = calc(a,b,c)
+				if val >= 1:
+					res = [y, float(val)]
+					self.add_database(res)
+			except Exception as e:
+				print(str(e))
+				pass
+	def add_database(self, res):
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("insert into user_combination(user, odd_one, odd_two, odd_three, result) values(%s,%s,%s,%s,%s) ", (self.user, res[0][0],res[0][1], res[0][2],res[1], ))
+			
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.commit()
+			db.close()
+
 
 @app.route("/", methods=['GET'])
 def home():
+	
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
@@ -50,6 +104,7 @@ def home():
 		pass
 	finally:
 		db.close()
+	
 	return render_template("home.html", **locals())
 
 @app.route("/topnav")
@@ -155,7 +210,8 @@ def getBookmaker(book):
 				matches = cur.fetchall()
 				
 			except Exception as e:
-				db.rollback();print(str(e))
+				db.rollback()
+				print(str(e))
 				pass
 			finally:
 				db.close()
@@ -286,7 +342,8 @@ def search():
 				matches = cur.fetchall()
 				
 			except Exception as e:
-				db.rollback();print(str(e))
+				db.rollback()
+				print(str(e))
 				pass
 			finally:
 				db.close()
@@ -295,6 +352,7 @@ def search():
 @app.route("/home/match/<match>")
 def gethomeMatch(match):
 	if match:
+		market_odds = []
 		x = match.split("-")
 		xeid = x[-1]
 		#print(xeid)
@@ -374,19 +432,26 @@ def gethomeMatch(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
-			
+			for mk in markets:
+				r = [mk[5], mk[6],mk[7]]
+				market_odds.append(mk)
+			for mk in other_markets:
+				r = [mk[2],mk[3],mk[4]]
+				market_odds.append(mk)
 			#print(best_away)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
+		if session.get("user") is not None:
+			Combine(markets_odds, session["user"])
 		return render_template("homematch.html", **locals())
 
 @app.route("/bookmaker/match/markets/<match>")
 def getBookMarkets(match):
 	if match:
-		print(match)
+		market_odds = []
 		try:
 			match = match.replace("vs", "-")
 		except:
@@ -462,14 +527,38 @@ def getBookMarkets(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
-			
-			#print(best_away)
+			for mk in markets:
+				r = [mk[5], mk[6],mk[7]]
+				market_odds.append(mk)
+			for mk in other_markets:
+				r = [mk[2],mk[3],mk[4]]
+				market_odds.append(mk)
 		except Exception as e:
-			db.rollback();print(str(e))
+			db.rollback()
+			print(str(e))
 			pass
 		finally:
 			db.close()
+		if session.get("user") is not None:
+			Combine(markets_odds, session["user"])
 		return render_template("bookmarkets.html", **locals())
+
+
+@app.route("/user/combination")
+def getCombination():
+	if session.get("user") != None:
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM user_combination WHERE user=%s", (session["user"],))
+			combinations = cur.fetchall()				
+		except Exception as e:
+			db.rollback()
+			print(str(e))
+			pass
+		finally:
+			db.close()
+	return render_template("combinations.html",**locals())
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)

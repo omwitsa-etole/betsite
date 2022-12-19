@@ -12,7 +12,21 @@ $(document).ready(function(){
 		alert('Failed to fetch page: ', err);
 		  
 	    });
+	fetch('/user/combination')
+	    .then(function(response) {
+		return response.text()
+	    })
+	    .then(function(html) {    
+		document.getElementById("combinations").innerHTML = html;
+		console.log(html)
+		
+	    })
+	    .catch(function(err) {  
+		alert('Failed to fetch page: ', err);
+		  
+	    });
 })
+
 function myFunction() {
 	var x = document.getElementById("myDropdown");
 	if(x.classList.contains("show")){
