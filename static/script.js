@@ -25,6 +25,14 @@ $(document).ready(function(){
 		alert('Failed to fetch page: ', err);
 		  
 	    });
+	if(location.search == "?login"){
+		var y = document.getElementById("form-l");
+		console.log(y)
+		y.style.display = "block";	
+		$("#form-l").load("/login");
+	}else{
+		document.getElementById("form-l").style.display == "none";
+	}
 })
 
 function myFunction() {
@@ -72,4 +80,13 @@ function showBookmakers(){
 }
 function hideloader() {
     document.getElementById('loading').style.display = 'none';
+}
+function popup(text){
+	if(text != "read"){
+		var x = document.getElementById("snackbar");
+		x.innerText = text;
+		x.className = "show";
+		setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+	}
+	
 }

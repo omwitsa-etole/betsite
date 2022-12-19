@@ -89,10 +89,32 @@ class Combine:
 			db.commit()
 			db.close()
 
+@app.route("/request/<mode>", methods=['POST'])
+def apiRequest(mode):
+	if mode == "login":
+		msg =  "not finished"
+		if request.method == "POST" and "username" in request.form:
+			username = request.form["username"]
+			if username != "":
+				session["user"] = username
+				return "success"
+			msg = "Invalid login credentials"
+		return msg
+
+@app.route("/login", methods=['GET'])
+def login():
+
+	return render_template("login.html",**locals())
+
+@app.route("/logout")
+def logout():
+	session.clear()
+	return redirect("/")
 
 @app.route("/", methods=['GET'])
 def home():
-	
+	#print(session.get("user"))
+
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
@@ -105,6 +127,7 @@ def home():
 	finally:
 		db.close()
 	
+	#matches = []
 	return render_template("home.html", **locals())
 
 @app.route("/topnav")
@@ -551,7 +574,8 @@ def getCombination():
 			db = DBO()
 			cur = db.cursor(buffered=True)
 			cur.execute("SELECT * FROM user_combination WHERE user=%s", (session["user"],))
-			combinations = cur.fetchall()				
+			combinations = cur.fetchall()
+			n = len(combinations)				
 		except Exception as e:
 			db.rollback()
 			print(str(e))
