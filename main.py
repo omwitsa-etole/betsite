@@ -468,7 +468,7 @@ def gethomeMatch(match):
 		finally:
 			db.close()
 		if session.get("user") is not None:
-			Combine(markets_odds, session["user"])
+			Combine(market_odds, session["user"])
 		return render_template("homematch.html", **locals())
 
 @app.route("/bookmaker/match/markets/<match>")
@@ -563,7 +563,7 @@ def getBookMarkets(match):
 		finally:
 			db.close()
 		if session.get("user") is not None:
-			Combine(markets_odds, session["user"])
+			Combine(market_odds, session["user"])
 		return render_template("bookmarkets.html", **locals())
 
 
