@@ -300,6 +300,34 @@ body{
 
 	</div>
 </div>
+<div class="results">
+<center><h4>Combinations</h4></center>
+<div id="combinations" class="combinations" style="width: 100%;">
+{%if session.get("user") != None%}
+	{%if n == 0%}<div ><center><h6>Select a match to view possible Combinations</h6></center></div>{%endif%}
+	<div class="bets">
+	Odds
+	<div class="res">
+	~1 
+	</div>
+	</div>
+	{%for combination in combinations%}
+	<div class="bets">
+	<button>{{combination[0][0]}}</button>
+	<button>{{combination[0][1]}}</button>
+	<button>{{combination[0][2]}}</button>
+	<div class="res">
+	{{'%0.2f'|format(combination[1]|float)}}
+	</div>
+	</div>
+	{%endfor%}
+{%else%}
+<div ><center><h6>Login to view combination results</h6></center></div>
+{%endif%}
+
+
+</div>
+</div>
 </body>
 <script>
 

@@ -47,8 +47,8 @@ def calc(a, b, c):
 
 class Combine:
 	def __init__(self, markets, user):
-		print(markets)
 		self.user  = user
+		self.combination = []
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
@@ -61,21 +61,29 @@ class Combine:
 			db.commit()
 			db.close()
 			
-		self.markets = markets
-		all_combinations = list(itertools.product(*self.markets))
-		for y in all_combinations:
-			try:
-				res = []
-				a = y[0]
-				b = y[1]
-				c = y[2]
-				val = calc(a,b,c)
-				if val >= 1:
+		allcombinations = list(itertools.product(markets))
+		print(allcombinations)
+		count = 0
+		for c in allcombinations:
+			for y in c:
+				try:
+					res = []
+					a = y[0]
+					b = y[1]
+					c = y[2]
+					val = calc(float(a),float(b),float(c))
+					print(val)
 					res = [y, float(val)]
-					self.add_database(res)
-			except Exception as e:
-				print(str(e))
-				pass
+					self.add_list(res)
+					break
+				except Exception as e:
+					print(str(e))
+					pass
+		
+	def add_list(self,res):
+		self.combination.append(res)
+	def get_list(self):
+		return self.combination
 	def add_database(self, res):
 		try:
 			db = DBO()
@@ -456,11 +464,11 @@ def gethomeMatch(match):
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
 			for mk in markets:
-				r = [mk[5], mk[6],mk[7]]
-				market_odds.append(mk)
+				r = [mk[6], mk[7],mk[8]]
+				market_odds.append(r)
 			for mk in other_markets:
-				r = [mk[2],mk[3],mk[4]]
-				market_odds.append(mk)
+				r = [mk[3],mk[4],mk[5]]
+				market_odds.append(r)
 			#print(best_away)
 		except Exception as e:
 			db.rollback();print(str(e))
@@ -468,7 +476,8 @@ def gethomeMatch(match):
 		finally:
 			db.close()
 		if session.get("user") is not None:
-			Combine(market_odds, session["user"])
+			ck = Combine(market_odds, session["user"])			
+			combinations = ck.get_list()
 		return render_template("homematch.html", **locals())
 
 @app.route("/bookmaker/match/markets/<match>")
@@ -551,11 +560,11 @@ def getBookMarkets(match):
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
 			for mk in markets:
-				r = [mk[5], mk[6],mk[7]]
-				market_odds.append(mk)
+				r = [mk[6], mk[7],mk[8]]
+				market_odds.append(r)
 			for mk in other_markets:
-				r = [mk[2],mk[3],mk[4]]
-				market_odds.append(mk)
+				r = [mk[3],mk[4],mk[5]]
+				market_odds.append(r)
 		except Exception as e:
 			db.rollback()
 			print(str(e))
@@ -563,7 +572,8 @@ def getBookMarkets(match):
 		finally:
 			db.close()
 		if session.get("user") is not None:
-			Combine(market_odds, session["user"])
+			ck = Combine(market_odds, session["user"])			
+			combinations = ck.get_list()
 		return render_template("bookmarkets.html", **locals())
 
 
