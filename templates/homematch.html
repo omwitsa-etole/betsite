@@ -141,7 +141,7 @@ body{
 	margin-left: 2.5%;
 	margin-top: 15px;
 	min-height: 120px;
-	max-height: 600px;
+	max-height: 400px;
 	overflow: auto;
 	border-radius: 10px;
 	background: white;
@@ -296,7 +296,7 @@ body{
 	</div>
 <div class="match-markets">
 <h5>Results</h5>
-<p>Maximum Percent: {{max_percent[1]}}</p>
+<p>Maximum Percent: {{'0.2f'|format(max_percent[1]|float)}}%</p><br>
 <p>Odds</p>
 <div class="bet-odds">
 <span class="b-odds"><button>(1) {{max_percent[0][0]}}</button></span>
@@ -310,7 +310,7 @@ body{
 <div class="results">
 <center><h4>Combinations<select style="float: right;" onchange="loadCombination(this.value)"><option value="~">Inverse</option><option value="%">Percentage</option></select></h4></center>
 <div id="combinations" class="combinations" style="width: 100%;">
-<div class="bets">Odds</div><div class="res">Output</div>
+<div class="bets">Odds<div class="res">Output</div></div>
 {%if session.get('user') != None%}{%if n == 0%}<div ><center><h6>Select a match to view possible Combinations</h6></center></div>{%endif%}
 <div id="comb-load">{{cm|safe}}</div>
 {%else%}<div ><center><h6>Login to view combination results</h6></center></div>{%endif%}</div>
