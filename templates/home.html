@@ -177,6 +177,13 @@ body{
 </div>
 <div style="position: fixed;z-index: 200;width: 100%;height: 100%;top: 0;left: 0;display: none;" id="form-l">
 </div>
+<div class="results" style="z-index: 1;">
+<center><h4>Combinations<select style="float: right;" ><option value="~">Inverse</option><option value="%">Percentage</option></select></h4></center>
+{%if session.get("user") == None%}
+<div ><center><h4>Login to view combination results</h4></center></div>
+{%endif%}
+<div ><center><h4>Select match to view combination results</h4></center></div>
+</div>
 </body>
 <script>
 
