@@ -162,7 +162,7 @@
 }
 .results{
 	width: 25%;
-	position: fixed;
+	position: absolute;
 	right: 1%;
 	top: 250px;
 	z-index: 5;
@@ -171,6 +171,13 @@
 	background: white;
 	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 	color: black;
+}
+#mydivheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: #2196F3;
+  color: #fff;
 }
 .combinations{
 	width: 100%;
