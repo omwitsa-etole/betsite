@@ -66,7 +66,8 @@ class Combine:
 		allcombinations = list(itertools.product(markets))
 		print(allcombinations)
 		count = 0
-		max_percent = 0
+		self.max_percent = 0
+		self.max_odds = []
 		for c in allcombinations:
 			for y in c:
 				try:
@@ -76,8 +77,9 @@ class Combine:
 					c = y[2]
 					val = calc(float(a),float(b),float(c))
 					if val < 1:
-						if val*100 > max_percent:
-							max_percent = val*100
+						if val*100 > self.max_percent:
+							self.max_percent = val*100
+							self.max_odds = y
 						per = [y, val*100]
 						res = [y, float(val)]
 						self.add_list(res, "~")
@@ -97,6 +99,8 @@ class Combine:
 			return self.combination
 		if md == "%":
 			return self.combination_p
+	def get_max(self):
+		return [self.max_odds,self.max_percent]
 	def add_database(self, res):
 		try:
 			db = DBO()
@@ -259,7 +263,7 @@ def getBookmaker(book):
 			finally:
 				db.close()
 		return render_template("bookmarks.html", **locals())
-
+"""
 @app.route("/bookmaker/match/<bookmatch>")
 def BookMatch(bookmatch):
 	if bookmatch:
@@ -286,6 +290,7 @@ def BookMatch(bookmatch):
 		finally:
 			db.close()
 		return render_template("bookmatch.html", **locals())
+"""
 @app.route("/search")
 def search():
 	match = request.args.get("matches")
@@ -504,18 +509,22 @@ def gethomeMatch(match):
 			cm_p = ""
 			for combination in combinations_p:
 				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			
+			max_percent = ck.get_max()
 		return render_template("homematch.html", **locals())
 
-@app.route("/bookmaker/match/markets/<match>")
+@app.route("/bookmaker/match/<match>")
 def getBookMarkets(match):
 	if match:
 		market_odds = []
+		x = match.split("-")
+		xeid = x[-1]
+		#print(xeid)
 		try:
-			match = match.replace("vs", "-")
-		except:
-			pass
-		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM home_matches WHERE xeid=%s", (xeid,))
+			matches = cur.fetchone()
+			match = matches[5]
 			matchteams = match
 			
 			match = match.lower()
@@ -591,6 +600,7 @@ def getBookMarkets(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
+			#print(best_away)
 			for mk in markets:
 				r = [mk[6], mk[7],mk[8]]
 				market_odds.append(r)
@@ -598,13 +608,11 @@ def getBookMarkets(match):
 				r = [mk[3],mk[4],mk[5]]
 				market_odds.append(r)
 		except Exception as e:
-			db.rollback()
-			print(str(e))
+			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
 		
-			
 		if session.get("user") is not None:
 			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
@@ -616,7 +624,8 @@ def getBookMarkets(match):
 			cm_p = ""
 			for combination in combinations_p:
 				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-		return render_template("bookmarkets.html", **locals())
+			max_percent = ck.get_max()
+		return render_template("bookmatch.html", **locals())
 
 
 @app.route("/user/combination")
