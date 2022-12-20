@@ -434,7 +434,10 @@ def gethomeMatch(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
-			match_bdd = " "+match_bd[1]
+			if " "not in match_bd[1]:
+				match_bdd = " "+match_bd[1]
+			else:
+				match_bdd = match_d[1]
 			match_bb = match_bdd.split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
@@ -478,17 +481,18 @@ def gethomeMatch(match):
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
 			#print(best_away)
+			for mk in markets:
+				r = [mk[6], mk[7],mk[8]]
+				market_odds.append(r)
+			for mk in other_markets:
+				r = [mk[3],mk[4],mk[5]]
+				market_odds.append(r)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
-		for mk in markets:
-			r = [mk[6], mk[7],mk[8]]
-			market_odds.append(r)
-		for mk in other_markets:
-			r = [mk[3],mk[4],mk[5]]
-			market_odds.append(r)
+		
 		if session.get("user") is not None:
 			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
@@ -541,7 +545,10 @@ def getBookMarkets(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
-			match_bdd = " "+match_bd[1]
+			if " "not in match_bd[1]:
+				match_bdd = " "+match_bd[1]
+			else:
+				match_bdd = match_d[1]
 			match_bb = match_bdd.split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
@@ -584,19 +591,20 @@ def getBookMarkets(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
-			
+			for mk in markets:
+				r = [mk[6], mk[7],mk[8]]
+				market_odds.append(r)
+			for mk in other_markets:
+				r = [mk[3],mk[4],mk[5]]
+				market_odds.append(r)
 		except Exception as e:
 			db.rollback()
 			print(str(e))
 			pass
 		finally:
 			db.close()
-		for mk in markets:
-			r = [mk[6], mk[7],mk[8]]
-			market_odds.append(r)
-		for mk in other_markets:
-			r = [mk[3],mk[4],mk[5]]
-			market_odds.append(r)
+		
+			
 		if session.get("user") is not None:
 			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
