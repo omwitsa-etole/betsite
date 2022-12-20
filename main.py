@@ -592,7 +592,7 @@ def getBookMarkets(match):
 			market_odds.append(r)
 		for mk in other_markets:
 			r = [mk[3],mk[4],mk[5]]
-				market_odds.append(r)
+			market_odds.append(r)
 		if session.get("user") is not None:
 			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
