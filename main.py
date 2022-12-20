@@ -424,6 +424,7 @@ def gethomeMatch(match):
 				match = match.replace("lfc", "")
 			
 			#print(match)
+			
 			prev_match = prev_match.split("-")
 			match_bd = prev_match
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
@@ -433,7 +434,8 @@ def gethomeMatch(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
-			match_bb = match_bd[1].split(" ")
+			match_bdd = match_bd[1]+" "
+			match_bb = match_bdd.split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
 			match_bb = match_b.replace(" - ", "-")
@@ -529,6 +531,7 @@ def getBookMarkets(match):
 				match = match.replace("lfc", "")
 			
 			#print(match)
+			
 			prev_match = prev_match.split("-")
 			match_bd = prev_match
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
@@ -538,7 +541,8 @@ def getBookMarkets(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
-			match_bb = match_bd[1].split(" ")
+			match_bdd = match_bd[1]+" "
+			match_bb = match_bdd.split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
 			match_bb = match_b.replace(" - ", "-")
