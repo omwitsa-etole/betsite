@@ -434,7 +434,7 @@ def gethomeMatch(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
-			match_bdd = match_bd[1]+" "
+			match_bdd = " "+match_bd[1]
 			match_bb = match_bdd.split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
@@ -541,7 +541,7 @@ def getBookMarkets(match):
 			match_teams = "%" + match_teams + "%"
 			match_d = match+" "
 			match_d = match_d.split("-")
-			match_bdd = match_bd[1]+" "
+			match_bdd = " "+match_bd[1]
 			match_bb = match_bdd.split(" ")
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
