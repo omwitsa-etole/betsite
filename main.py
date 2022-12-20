@@ -522,7 +522,7 @@ def getBookMarkets(match):
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM home_matches WHERE xeid=%s", (xeid,))
+			cur.execute("SELECT * FROM bookmark_matches WHERE xeid=%s", (xeid,))
 			matches = cur.fetchone()
 			match = matches[5]
 			matchteams = match
@@ -626,7 +626,6 @@ def getBookMarkets(match):
 				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
 		return render_template("bookmatch.html", **locals())
-
 
 @app.route("/user/combination")
 def getCombination():
