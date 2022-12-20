@@ -475,18 +475,18 @@ def gethomeMatch(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
-			for mk in markets:
-				r = [mk[6], mk[7],mk[8]]
-				market_odds.append(r)
-			for mk in other_markets:
-				r = [mk[3],mk[4],mk[5]]
-				market_odds.append(r)
 			#print(best_away)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
+		for mk in markets:
+			r = [mk[6], mk[7],mk[8]]
+			market_odds.append(r)
+		for mk in other_markets:
+			r = [mk[3],mk[4],mk[5]]
+			market_odds.append(r)
 		if session.get("user") is not None:
 			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
@@ -580,18 +580,19 @@ def getBookMarkets(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
-			for mk in markets:
-				r = [mk[6], mk[7],mk[8]]
-				market_odds.append(r)
-			for mk in other_markets:
-				r = [mk[3],mk[4],mk[5]]
-				market_odds.append(r)
+			
 		except Exception as e:
 			db.rollback()
 			print(str(e))
 			pass
 		finally:
 			db.close()
+		for mk in markets:
+			r = [mk[6], mk[7],mk[8]]
+			market_odds.append(r)
+		for mk in other_markets:
+			r = [mk[3],mk[4],mk[5]]
+				market_odds.append(r)
 		if session.get("user") is not None:
 			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			

@@ -71,6 +71,7 @@
 <div class="results">
 <center><h4>Combinations<select style="float: right;" onchange="loadCombination(this.value)"><option value="~">Inverse</option><option value="%">Percentage</option></select></h4></center>
 <div id="combinations" class="combinations" style="width: 100%;">
+<div class="bets">Odds</div><div class="res">Output</div>
 {%if session.get('user') != None%}{%if n == 0%}<div ><center><h6>Select a match to view possible Combinations</h6></center></div>{%endif%}
 <div id="comb-load">{{cm|safe}}</div>
 {%else%}<div ><center><h6>Login to view combination results</h6></center></div>{%endif%}</div>
