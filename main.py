@@ -32,7 +32,8 @@ def DBO():
 				     passwd="tryhackmeanddie",  # your password
 				     db="askabcry_betting")
 				break
-			except:
+			except Exception as e:
+				print(str(e))
 				pass
 
 
@@ -49,6 +50,7 @@ class Combine:
 	def __init__(self, markets, user):
 		self.user  = user
 		self.combination = []
+		self.combination_p= []
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
@@ -64,6 +66,7 @@ class Combine:
 		allcombinations = list(itertools.product(markets))
 		print(allcombinations)
 		count = 0
+		max_percent = 0
 		for c in allcombinations:
 			for y in c:
 				try:
@@ -72,18 +75,28 @@ class Combine:
 					b = y[1]
 					c = y[2]
 					val = calc(float(a),float(b),float(c))
-					print(val)
-					res = [y, float(val)]
-					self.add_list(res)
+					if val < 1:
+						if val*100 > max_percent:
+							max_percent = val*100
+						per = [y, val*100]
+						res = [y, float(val)]
+						self.add_list(res, "~")
+						self.add_list(per, "%")
 					break
 				except Exception as e:
 					print(str(e))
 					pass
 		
-	def add_list(self,res):
-		self.combination.append(res)
-	def get_list(self):
-		return self.combination
+	def add_list(self,res,md):
+		if md == "~":
+			self.combination.append(res)
+		if md == "%":
+			self.combination_p.append(res)
+	def get_list(self,md):
+		if md == "~":
+			return self.combination
+		if md == "%":
+			return self.combination_p
 	def add_database(self, res):
 		try:
 			db = DBO()
@@ -122,7 +135,6 @@ def logout():
 @app.route("/", methods=['GET'])
 def home():
 	#print(session.get("user"))
-
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
@@ -134,7 +146,7 @@ def home():
 		pass
 	finally:
 		db.close()
-	
+
 	#matches = []
 	return render_template("home.html", **locals())
 
@@ -476,8 +488,17 @@ def gethomeMatch(match):
 		finally:
 			db.close()
 		if session.get("user") is not None:
+			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
-			combinations = ck.get_list()
+			combinations = ck.get_list("~")
+			combinations_p = ck.get_list("%")
+			cm = ""
+			for combination in combinations:
+				cm = cm+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			cm_p = ""
+			for combination in combinations_p:
+				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			
 		return render_template("homematch.html", **locals())
 
 @app.route("/bookmaker/match/markets/<match>")
@@ -572,27 +593,27 @@ def getBookMarkets(match):
 		finally:
 			db.close()
 		if session.get("user") is not None:
+			n = len(market_odds)
 			ck = Combine(market_odds, session["user"])			
-			combinations = ck.get_list()
+			combinations = ck.get_list("~")
+			combinations_p = ck.get_list("%")
+			cm = ""
+			for combination in combinations:
+				cm = cm+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			cm_p = ""
+			for combination in combinations_p:
+				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 		return render_template("bookmarkets.html", **locals())
 
 
 @app.route("/user/combination")
 def getCombination():
-	if session.get("user") != None:
-		try:
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM user_combination WHERE user=%s", (session["user"],))
-			combinations = cur.fetchall()
-			n = len(combinations)				
-		except Exception as e:
-			db.rollback()
-			print(str(e))
-			pass
-		finally:
-			db.close()
-	return render_template("combinations.html",**locals())
+	req = request.args.get("inverse")
+	reqp = request.args.get("percent")
+	if req != None:
+		return render_template("combinations.html")
+	if reqp != None:
+		return render_template("combinations_p.html")
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)

@@ -19,7 +19,10 @@ $(document).ready(function(){
 		y.style.display = "block";	
 		$("#form-l").load("/login");
 	}else{
-		document.getElementById("form-l").style.display == "none";
+		var x = document.getElementById("form-l");
+		if(x){
+			x.style.display == "none";
+		}
 	}
 })
 

@@ -1,13 +1,5 @@
 <div id="snackbar"></div>
-<div class="results">
-<center><h4>Combinations</h4></center>
-<div id="combinations" class="combinations" style="width: 100%;">
-{%if session.get("user") == None%}
-<div ><center><h4>Login to view combination results</h4></center></div>
-{%endif%}
-<div ><center><h4>Select match to view combination results</h4></center></div>
-</div>
-</div>
+
 <div class="dropdown-search">
   <div id="myDropdown" class="dropdown-content-search">
     <input class="" type="text" placeholder="Search " id="myInput" >
@@ -41,7 +33,7 @@
 			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
 			<div class="dropdown-content">
 			{%if session.get("user") == None %}
-				<a href="?login"">Log in</a>
+				<a href="/?login"">Log in</a>
 				<a>Sign Up</a>
 			{%else%}
 				<a>Profile</a>
