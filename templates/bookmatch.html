@@ -296,6 +296,7 @@ body{
 	</div>
 <div class="match-markets">
 <h5>Results</h5>
+{%if session.get("user") != None%}
 <p>Maximum Percent: {{"%.2f"|format(max_percent[1])}}%</p>
 <p>Odds</p>
 <div class="bet-odds">
@@ -303,6 +304,14 @@ body{
 <span class="b-odds"><button>(X) {{max_percent[0][1]}}</button></span>
 <span class="b-odds"><button >(2) {{max_percent[0][2]}}</button></span>
 </div>
+{%else%}
+<p>Login to view results</p>
+<div class="bet-odds">
+<span class="b-odds"><button>(1) </button></span>
+<span class="b-odds"><button>(X) </button></span>
+<span class="b-odds"><button >(2)</button></span>
+</div>
+{%endif%}
 </div>
 
 	</div>
