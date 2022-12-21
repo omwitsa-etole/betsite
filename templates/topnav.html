@@ -1,3 +1,4 @@
+
 <div id="snackbar"></div>
 
 <div class="dropdown-search">
@@ -30,21 +31,24 @@
 			
 			
 			<div class="dropdown">
+			{%if session.get("user") != None %}
 			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
 			<div class="dropdown-content">
-			{%if session.get("user") == None %}
-				<a href="/?login"">Log in</a>
-				<a>Sign Up</a>
-			{%else%}
 				<a>Profile</a>
 				<a href="{{url_for('logout')}}">Log out</a>
-			{%endif%}
+				
 			</div>
+			{%else%}
+			<div class="login-content">
+				<a href="/?login"">Log in</a>
+				<a>Sign Up</a>
+			</div>
+			{%endif%}
 			</div>
 		</div>
 		<div class="top-nav-b">
 		<button onclick="location.href='{{url_for("home")}}'">Home</button>
-		<button onclick="location.href='{{url_for("bestToday")}}'">Best today</button>
+		<button onclick='alert("This section is coming soon")'>Best today</button>
 		<select onchange="toBookmark(this.value)">
 		<option value="null">BookMarks</option>
 		<option value="paripesa.ng-football">Paripesa</option>

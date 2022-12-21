@@ -139,6 +139,7 @@ def logout():
 @app.route("/", methods=['GET'])
 def home():
 	#print(session.get("user"))
+	#"""
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
@@ -151,6 +152,7 @@ def home():
 	finally:
 		db.close()
 
+	
 	#matches = []
 	return render_template("home.html", **locals())
 
