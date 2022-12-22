@@ -9,6 +9,7 @@ import mysql.connector
 import datetime
 from datetime import timedelta
 import itertools
+import time
 
 app = Flask(__name__)
 app.secret_key = 'app@Betting'
@@ -32,15 +33,15 @@ def DBO():
 			pass
 		
 	else:
-			try:
-				db = mysql.connector.connect(host="127.0.0.1",    # your host, usually localhost
-				     user="root",         # your username
-				     passwd="root",  # your password
-				     db="askabcry_betting")
-			except Exception as e:
-				print(str(e))
-				DBO()
-				pass
+		try:
+			db = mysql.connector.connect(host="127.0.0.1",    # your host, usually localhost
+			     user="root",         # your username
+			     passwd="root",  # your password
+			     db="askabcry_betting")
+		except Exception as e:
+			print(str(e))
+			DBO()
+			pass
 
 
 
