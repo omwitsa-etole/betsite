@@ -234,8 +234,8 @@ body{
 				{% set match_teams = match[5].replace("—", " vs ")%}
 			{%endif%}
 			<span style="position: absolute;top: 0;left: 1%;font-size: 18px;width: 100%;height: 30px;overflow: hidden;text-align: justify;">Time: {{match[3]}} <i style="margin-left: 6px;"> Date: {{m_date}}</i><a href='{{url_for("getBookmaker", book=match[12])}}' style="float: right;margin-right: 20px;text-align: right;">Bookmaker: {{bookmaker[0]}}</a></span>
-			<div class="match" onclick="location.href='{{url_for("BookMatch", bookmatch=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
-			<a href="{{url_for('BookMatch', bookmatch=match[4])}}">{{match_teams}}</a>
+			<div class="match" onclick="location.href='{{url_for("getBookMarkets", match=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
+			<a href="{{url_for('getBookMarkets', match=match[4])}}">{{match_teams}}</a>
 			</div>
 			<div class="bet-odds" id="{{match[11]}}">
 			<button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}</button>
