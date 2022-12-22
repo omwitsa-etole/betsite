@@ -21,27 +21,21 @@ print(is_prod)
 
 def DBO():
 	if is_prod != None:
-		try:
-			db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
-			     user=os.getenv("DB_USER"),         
-			     passwd=os.getenv("DB_PASS"),  
-			     db=os.getenv("DB_NAME"))
-		except Exception as e:
-			print(str(e))
-			time.sleep(1)
-			DBO()
-			pass
-		
+		db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
+		     user=os.getenv("DB_USER"),         
+		     passwd=os.getenv("DB_PASS"),  
+		     db=os.getenv("DB_NAME"))
 	else:
-		try:
-			db = mysql.connector.connect(host="127.0.0.1",    # your host, usually localhost
-			     user="root",         # your username
-			     passwd="root",  # your password
-			     db="askabcry_betting")
-		except Exception as e:
-			print(str(e))
-			DBO()
-			pass
+		while True:
+			try:
+				db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
+				     user="askabcry_root",         # your username
+				     passwd="tryhackmeanddie",  # your password
+				     db="askabcry_betting")
+				break
+			except Exception as e:
+				print(str(e))
+				pass
 
 
 
