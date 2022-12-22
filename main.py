@@ -18,24 +18,21 @@ is_prod = os.getenv('IS_HEROKU')
 print(is_prod)
 
 
+def get_code():
+	pass
 
 def DBO():
-	if is_prod != None:
-		db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
-		     user=os.getenv("DB_USER"),         
-		     passwd=os.getenv("DB_PASS"),  
-		     db=os.getenv("DB_NAME"))
-	else:
-		while True:
-			try:
-				db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
-				     user="askabcry_root",         # your username
-				     passwd="tryhackmeanddie",  # your password
-				     db="askabcry_betting")
-				break
-			except Exception as e:
-				print(str(e))
-				pass
+	
+	while True:
+		try:
+			db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
+			     user="askabcry_root",         # your username
+			     passwd="tryhackmeanddie",  # your password
+			     db="askabcry_betting")
+			break
+		except Exception as e:
+			print(str(e))
+			pass
 
 
 
