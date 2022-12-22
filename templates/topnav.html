@@ -1,4 +1,44 @@
 
+<div class="left-nav">
+<form method="GET">
+<input type="text" id="left-search" placeholder="search leagues and events" name="league">
+</form>
+<div class="leagues">
+Popular Leagues
+<div class="league-item">
+<h4>Football</h4>
+<a class="league-url" href="/?league=cup-of-nations">
+<img src="{{url_for('static', filename='caf.webp')}}"></img>
+<span class="league-title">Cup of Nations</span>
+</a>
+<a class="league-url" href="/?league=euro">
+<img src="{{url_for('static', filename='euro.webp')}}"></img>
+<span class="league-title">Euro</span>
+</a>
+<a class="league-url" href="/?league=champions-league">
+<img src="{{url_for('static', filename='cp.webp')}}"></img>
+<span class="league-title">Champions League</span>
+</a>
+<a class="league-url" href="/?league=europa-league">
+<img src="{{url_for('static', filename='europa.webp')}}"></img>
+<span class="league-title">Europa League</span>
+</a>
+<a class="league-url" href="/?league=premier-league">
+<img src="{{url_for('static', filename='premier.webp')}}"></img>
+<span class="league-title">Premier League</span>
+</a>
+<a class="league-url" href="/?league=bundesliga">
+<img src="{{url_for('static', filename='bundesliga.webp')}}"></img>
+<span class="league-title">Bundesliga</span>
+</a>
+<a class="league-url" href="/?league=primera-division">
+<img src="{{url_for('static', filename='primera.webp')}}"></img>
+<span class="league-title">Primera Division</span>
+</a>
+</div>
+</div>
+</div>
+
 <div id="snackbar"></div>
 
 <div class="dropdown-search">

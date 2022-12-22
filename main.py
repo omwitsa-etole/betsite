@@ -20,20 +20,26 @@ print(is_prod)
 
 def DBO():
 	if is_prod != None:
-		db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
-		     user=os.getenv("DB_USER"),         
-		     passwd=os.getenv("DB_PASS"),  
-		     db=os.getenv("DB_NAME"))
+		try:
+			db = mysql.connector.connect(host=os.getenv("DB_SERVER"),    
+			     user=os.getenv("DB_USER"),         
+			     passwd=os.getenv("DB_PASS"),  
+			     db=os.getenv("DB_NAME"))
+		except Exception as e:
+			print(str(e))
+			time.sleep(1)
+			DBO()
+			pass
+		
 	else:
-		while True:
 			try:
-				db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
-				     user="askabcry_root",         # your username
-				     passwd="tryhackmeanddie",  # your password
+				db = mysql.connector.connect(host="127.0.0.1",    # your host, usually localhost
+				     user="root",         # your username
+				     passwd="root",  # your password
 				     db="askabcry_betting")
-				break
 			except Exception as e:
 				print(str(e))
+				DBO()
 				pass
 
 
@@ -140,11 +146,18 @@ def logout():
 def home():
 	#print(session.get("user"))
 	#"""
+	league = request.args.get("league")
+
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
-		cur.execute("SELECT * FROM home_matches")
-		matches = cur.fetchall()
+		if league != None:
+			ll = "%"+league+"%"
+			cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
+			matches = cur.fetchall()
+		else:		
+			cur.execute("SELECT * FROM home_matches")
+			matches = cur.fetchall()
 		
 	except Exception as e:
 		db.rollback();print(str(e))
