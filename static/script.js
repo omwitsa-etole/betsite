@@ -36,7 +36,6 @@ setInterval(time, 1000);
 
 function time() {
 	  var span_time = document.getElementById('time-now');
-	  console.log(span_time)
 	  var d = new Date();
 	  var s = d.getSeconds();
 	  var m = d.getMinutes();

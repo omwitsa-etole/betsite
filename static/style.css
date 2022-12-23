@@ -356,6 +356,7 @@
 @media only screen and (max-width: 800px) {
 	.b-ody{
 		margin-left: 0;
+		margin-top: 10%;
 		width: 100%;
 	}
 	.dropdown-search {
