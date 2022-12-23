@@ -37,6 +37,26 @@ Popular Leagues
 </a>
 </div>
 </div>
+<br>
+<div class="legues">
+Countries
+<div class="league-item">
+</div>
+</div>
+<br>
+
+<div class="leagues">
+Bookmakers
+<div class="league-item">
+<a class="league-url" onclick="toBookmark(this.title)" title="paripesa.ng-football"><span class="league-title">Paripesa</span></a>
+<a class="league-url" onclick="toBookmark(this.title)"  title="betbonanza.com-football"><span class="league-title">BetBonanza</span></a>
+<a class="league-url" onclick="toBookmark(this.title)" title="sportybet.com-football"><span class="league-title">SportyBet</span></a>
+<a class="league-url" onclick="toBookmark(this.title)" title="suprabets.com"><span class="league-title">SupraBets</span></a>
+<a class="league-url" onclick="toBookmark(this.title)" title="dafabet.com"><span class="league-title">Dafabet</span></a>
+<a class="league-url" onclick="toBookmark(this.title)" title="unibet.com-football"><span class="league-title">Unibet</span></a>
+</div>
+</div>
+
 </div>
 
 <div id="snackbar"></div>
@@ -67,26 +87,45 @@ Popular Leagues
 </div>
 </div>
 <div class="top-nav-a">
-			<h2 style="position: absolute;left: 0;color: yellow;">SureBet</h2>
-			
-			
-			<div class="dropdown">
-			{%if session.get("user") != None %}
-			<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
-			<div class="dropdown-content">
-				<a>Profile</a>
-				<a href="{{url_for('logout')}}">Log out</a>
-				
-			</div>
-			{%else%}
-			<div class="login-content">
-				<a href="/?login"">Log in</a>
-				<a>Sign Up</a>
-			</div>
-			{%endif%}
-			</div>
-		</div>
-		<div class="top-nav-b">
+	<h2 style="position: absolute;left: 2%;color: yellow;"><i class="fa fa-futbol-o" aria-hidden="true"></i> Football</h2>
+	
+	
+	
+</div>
+<div class="top-nav-b">
+<div class="l">
+<div class="h-ome" onclick="location.href='{{url_for("home")}}'">
+<a href="{{url_for('home')}}"><i class="fa fa-home" aria-hidden="true"></i></a>
+</div>
+<div class="book-makers">
+<a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'book-makers')"><i class="fa fa-futbol-o" aria-hidden="true"></i> Bookmakers <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+<div class="drop-up" id="book-makers" style="display: none;">
+<input id="search-books" placeholder="search country"  onkeyup="filterCountries()">
+<div class="drop-list" id="book-list">
+<button><span>Kenya</span></button>
+<button><span>Nigeria</span></button>
+</div>
+<div class="drop-btm">
+<a>All bookmakers</a> 
+</div>
+</div>
+</div>
+<div class="by-time" onclick="makeActive(this, 'null')">
+<a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'null')"><i class="fa fa-clock" aria-hidden="true"></i> By Time</a>
+</div>
+<div class="by-cal" >
+<a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'calender')"><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+<div class="drop-up cal" id="calender" style="display: none;">
+
+</div>
+</div>
+</div>
+<div class="r-b">
+<div class="time-now"><i class="fa fa-clock" aria-hidden="true"></i> <span id="time-now"></span></div>
+</div>
+</div>
+		
+		<!------- 
 		<button onclick="location.href='{{url_for("home")}}'">Home</button>
 		<button onclick='alert("This section is coming soon")'>Best today</button>
 		<select onchange="toBookmark(this.value)">
@@ -98,12 +137,14 @@ Popular Leagues
 		<option value="dafabet.com">Dafabet</option>
 		<option value="unibet.com-football">Unibet</option>
 		</select>
-		</div>
+		->
 <a id="back" onclick="history.go(-1)" style="float: left;cursor: pointer;margin-left: 1%;"><-Back</a>
 
 
 <script>
-$(document).ready(function(){
+$(document).ready(function{
+
 
 })
+
 </script>

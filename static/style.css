@@ -1,3 +1,31 @@
+
+.top-nav{
+	position: relative;
+	width: 100%;
+	background: black;
+	color: white;
+	font-size: 14px;
+	border-radius: 10px;
+	height: 150px;
+}
+.top-nav-a{
+	position: absolute;
+	top: 0;
+	margin-top: -70px;
+	width: 100%;
+	height: 70px;
+	
+}
+.top-nav-b{
+	margin-top: 70px;
+	width: 100%;
+	height: 80px;
+	background: white;
+	overflow-x: auto;
+	overflow-y: hidden;
+	color: black;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
 .dropbtn {
   background-color: #04AA6D;
   color: white;
@@ -27,12 +55,13 @@
 
 #myInput:focus {outline: 3px solid #ddd;}
 .b-ody{
+	margin-top: 5%;
 	width: 50%;position: relative;height: 100%;float: left;margin-left: 20%;background: #ddd;border-radius: 8px;
 }
 .dropdown-search {
   position: fixed;
   right: 1%;
-  top: 1%;
+  top: 10%;
   z-index: 101;
   width: 25%;
   height: 240px;
@@ -262,10 +291,11 @@
 }
 .left-nav{
 	position: fixed;
-	top: 0;
+	top: 10%;
 	left: 1%;
 	width: 18%;
-	height: 100%;
+	height: 90%;
+	overflow-y: auto;
 	background: white;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	color: black;
@@ -321,6 +351,8 @@
 	margin-left: ;
 	text-align: left;	
 }
+
+
 @media only screen and (max-width: 800px) {
 	.b-ody{
 		margin-left: 0;
@@ -335,4 +367,139 @@
 	.left-nav{
 		display: none;
 }
+}
+.t-ody{
+	position: fixed;
+	width: 100%;
+	height: 10%;
+	left: 0;
+	top: 0;z-index: 300;
+	background: black;
+	color: white;
+}
+
+.r-b{
+	float: right;
+	margin-top: 18px;
+	margin-right: 15px;
+	
+}
+.time-now{
+	text-align: center;
+	width: 100px;
+	height: 35px;
+	border-radius: 20px;
+	background: #ddd;
+}
+.book-makers{
+	background: #ddd;
+	color: black;
+	width: 150px;
+	height: 35px;
+	border-radius: 9px;
+	position: relative;
+	margin-top: ;
+}
+.book-makers a{
+	width: 100%;
+	height: 100%;
+}
+.h-ome{
+	
+	background: #ddd;
+	color: black;
+	width: 80px;
+	height: 35px;
+	
+}
+.l{
+	position: absolute;
+	top: 0;
+	height: 100%;
+  	text-align: baseline;
+}
+
+.l div{
+	margin-left: 10px;
+	display: inline-block;
+	margin-top: 15px;
+	border-radius: 20px;
+	cursor: pointer;
+	text-align: center;
+}
+.l div a{
+	text-decoration: none;
+	
+}
+.h-ome a{
+	margin-top: 15px;
+	
+}
+.by-time{
+	width: 100px;
+	height: 35px;
+	background: #ddd;
+	color: black;
+	
+}
+.by-cal{
+	width: 80px;
+	height: 35px;
+	background: #ddd;
+	color: black;
+	position: relative;
+}
+.by-cal a{
+	width: 100%;
+	height: 100%;
+}
+.active{
+	background: black;
+	color: white;
+}
+.drop-up{
+	position: absolute;
+	z-index: 500;
+	left: 0;
+	top: 100%;
+	width: 250px;
+	height: 350px;
+	background: white;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	border-radius: 20px;
+	
+}
+.drop-btm{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 30px;
+	font-size: 18px;
+	color: blue;
+}
+.cal{
+	height: 250px;
+}
+#search-books{
+	width: 90%;
+	margin-left: 5%;
+	height: 30px;
+	border-radius: 20px;
+	margin-top: 15px;
+	text-align: center;
+}
+.drop-list{
+	width: 100%;
+	height: 70%;
+}
+.drop-list button{
+	color: black;
+	border: none;
+	cursor: pointer;
+	width: 40%;
+	height: 15%;
+}
+.drop-list button:hover{
+	color: blue;
 }

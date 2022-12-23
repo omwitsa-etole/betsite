@@ -24,7 +24,27 @@ $(document).ready(function(){
 			x.style.display == "none";
 		}
 	}
+	
 })
+function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
+
+var span_time = document.getElementById('time-now');
+setInterval(time, 1000);
+
+
+function time() {
+	  var span_time = document.getElementById('time-now');
+	  console.log(span_time)
+	  var d = new Date();
+	  var s = d.getSeconds();
+	  var m = d.getMinutes();
+	  var h = d.getHours();
+	  span_time.textContent = 
+	    ("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2);
+	}
+
 
 function myFunction() {
 	var x = document.getElementById("myDropdown");
@@ -80,4 +100,38 @@ function popup(text){
 		setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 	}
 	
+}
+
+function makeActive(el, id){	
+	if(id != "null"){
+		var x = document.getElementById(id)
+		if(x.style.display == 'block'){
+			x.style.display='none';
+		}else{ x.style.display = 'block';}
+	}
+	if(el.classList.contains('active')){
+		el.classList.remove('active');
+	}else{
+		el.classList.add('active')
+	}
+}
+function filterCountries(){
+	 var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("search-books");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("book-list");
+  tr = table.getElementsByTagName("button");
+  let x = tr.length;
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("span")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+	x = x -1;	
+      }
+    }
+  }
 }

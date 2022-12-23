@@ -16,34 +16,7 @@ body{
 	height: 100%;
 	overflow-x: hidden;
 }
-.top-nav{
-	position: absolute;
-	z-index: 99;
-	top: 0;
-	left: 0;
-	width: 100%;
-	background: black;
-	color: white;
-	font-size: 14px;
-	border-radius: 10px;
-	height: 150px;
-}
-.top-nav-a{
-	width: 100%;
-	height: 70px;
-	
-}
-.top-nav-b{
-	width: 100%;
-	height: 80px;
-	background: white;
-	overflow-x: auto;
-	overflow-y: hidden;
-	color: black;
-	position: relative;
-	text-align: left;
-	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
+
 .top-nav-b button{
 	display: inline;
 	width: 28%;
@@ -200,6 +173,26 @@ body{
 
 </head>
 <body>
+<div class="t-ody">
+<h2 style="position: absolute;left: 2%;color: yellow;">SureBet</h2>
+
+
+<div class="dropdown">
+{%if session.get("user") != None %}
+<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
+<div class="dropdown-content">
+	<a>Profile</a>
+	<a href="{{url_for('logout')}}">Log out</a>
+	
+</div>
+{%else%}
+<div class="login-content">
+	<a href="/?login"">Log in</a>
+	<a>Sign Up</a>
+</div>
+{%endif%}
+</div>
+</div>
 <div class="b-ody" >
 	<div class="top-nav" id="top-nav">
 		
