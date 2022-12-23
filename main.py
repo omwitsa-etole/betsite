@@ -468,6 +468,7 @@ def search():
 @app.route("/home/match/<match>")
 def gethomeMatch(match):
 	if match:
+		max_percent = [[], 0]
 		market_odds = []
 		x = match.split("-")
 		xeid = x[-1]
@@ -595,6 +596,7 @@ def gethomeMatch(match):
 @app.route("/bookmaker/match/<match>")
 def getBookMarkets(match):
 	if match:
+		max_percent = [[], 0]
 		market_odds = []
 		x = match.split("-")
 		xeid = x[-1]
