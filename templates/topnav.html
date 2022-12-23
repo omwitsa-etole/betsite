@@ -1,8 +1,6 @@
 
 <div class="left-nav">
-<form method="GET" action="/">
-<input type="text" id="left-search" placeholder="search leagues and events" name="league">
-</form>
+
 <div class="leagues">
 Popular Leagues
 <div class="league-item">
@@ -37,12 +35,7 @@ Popular Leagues
 </a>
 </div>
 </div>
-<br>
-<div class="legues">
-Countries
-<div class="league-item">
-</div>
-</div>
+
 <br>
 
 <div class="leagues">
@@ -56,6 +49,13 @@ Bookmakers
 <a class="league-url" onclick="toBookmark(this.title)" title="unibet.com-football"><span class="league-title">Unibet</span></a>
 </div>
 </div>
+<br>
+<div class="legues">
+Countries
+<div class="league-item">
+</div>
+</div>
+
 
 </div>
 
@@ -63,9 +63,11 @@ Bookmakers
 
 <div class="dropdown-search">
   <div id="myDropdown" class="dropdown-content-search">
-    <input class="" type="text" placeholder="Search " id="myInput" >
-    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search in Matches</a>
-    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search in Leagues</a>
+    <form method="GET" action="/">
+	<input type="text" id="myInput" placeholder="search leagues and events" name="league">
+	</form>
+    <a href="javascript:void(0)" onclick="searchQuery('matches')">Search for Matches</a>
+    <a href="javascript:void(0)" onclick="searchQuery('leagues')">Search for Leagues</a>
     <div class="bookmark">
     <a href="javascript:void(0)" onclick="showBookmakers()">Search in bookmark <i class="fa fa-caret-down" aria-hidden="true" style="float: right;margin-right: 10px;"></i></a>
     <div class="bookmarks" id="bookmarks">
@@ -102,8 +104,8 @@ Bookmakers
 <div class="drop-up" id="book-makers" style="display: none;">
 <input id="search-books" placeholder="search country"  onkeyup="filterCountries()">
 <div class="drop-list" id="book-list">
-<button><span>Kenya</span></button>
-<button><span>Nigeria</span></button>
+<button onclick="filterB('ken')"><span>Kenya</span></button>
+<button onclick="filterB('ng')"><span>Nigeria</span></button>
 </div>
 <div class="drop-btm">
 <a>All bookmakers</a> 

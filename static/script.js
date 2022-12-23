@@ -135,3 +135,12 @@ function filterCountries(){
     }
   }
 }
+
+function filterB(val){
+	x = location.search;
+	if(x!= ""){
+		location.href = location.href+"&&filter="+val
+	}else{
+		location.search = "?filter="+val
+	}
+}
