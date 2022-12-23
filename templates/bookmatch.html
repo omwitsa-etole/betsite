@@ -195,6 +195,7 @@ body{
 }
 </style>
 <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+<script src="{{url_for('static', filename='jquery.js')}}"></script>
 <script src="{{url_for('static', filename='script.js')}}"></script>
 
 </head>
@@ -211,17 +212,28 @@ body{
 		<div class="match-box">
 		<span style="position: absolute;top: 0;left: 1%;font-size: 18px;">Time: {{matches[3]}} <i style="margin-left: 20px;">Date: {{m_date}}</i></span>
 		<div style="position: absolute;top: 20px;width: 100%;text-align: center;font-size: 20px;">
-		<a href="{{url_for('getBookMarkets', match=matches[4])}}">{{matchteams.replace("-", "vs")}}</a>
+		<a href='{{url_for("getBookMarkets", match=matches[4])}}'>{{matchteams.replace("-", " vs ")}}</a><br>
+		{%if max_percent[1] != "0" and max_percent[1] != 0%}
+		<span>(Odds with max percent)</span>
+		{%else%}
+		<span>(Odds with higgest values)</span>
+		{%endif%}
 		</div>
 		<div class="bet-odds" id="{{matches[0]}}">
-		{%if best_home != None%}
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{best_home}}<p class="odd-mkt"></p></button></span>
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{best_draw}}<p class="odd-mkt"></p></button></span>
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{best_away}}<p class="odd-mkt"></p></button></span>	
+		{%if max_percent[1] != "0" and max_percent[1] != 0%}
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{max_percent[0][0]}}</button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{max_percent[0][1]}}</button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{max_percent[0][2]}}</button></span>
 		{%else%}
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{matches[6]}}<p class="odd-mkt">{{matches[13]}}</p></button></span>
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{matches[7]}}<p class="odd-mkt">{{matches[14]}}</p></button></span>
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{matches[8]}}<p class="odd-mkt">{{matches[15]}}</p></button></span>
+			{%if best_home != None%}
+				<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{best_home}}<p class="odd-mkt"></p></button></span>
+				<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{best_draw}}<p class="odd-mkt"></p></button></span>
+				<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{best_away}}<p class="odd-mkt"></p></button></span>	
+			{%else%}
+				<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{matches[6]}}<p class="odd-mkt">{{matches[13]}}</p></button></span>
+				<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{matches[7]}}<p class="odd-mkt">{{matches[14]}}</p></button></span>
+				<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{matches[8]}}<p class="odd-mkt">{{matches[15]}}</p></button></span>
+			{%endif%}
 		{%endif%}
 		</div>
 		</div>
@@ -243,47 +255,51 @@ body{
 		</tr>
 		{%if n != 0%}
 			{%for market in markets%}
-			<tr>
-			{%set mkt=market[12].split("-")%}
-			<td class="mkt">{{mkt[0]}}</td>
-			<td class="odds" id="{{market[10]}}">
-			
-			{%if market[6] == best_home|string%}
-			<button class="active" onclick="selectB(this, this.parentElement.id)">
-			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
-			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[6]}}</button>
-			{%if market[7] == best_draw|string%}
+			{%if [market[6], market[7], market[8]] in market_odds[0:5]%}
+				<tr>
+				{%set mkt=market[12].split("-")%}
+				<td class="mkt">{{mkt[0]}}</td>
+				<td class="odds" id="{{market[10]}}">
+				
+				{%if market[6] == best_home|string%}
 				<button class="active" onclick="selectB(this, this.parentElement.id)">
-			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
-			{%endif%}  <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[7]}}</button>
-			{%if market[8] == best_away|string%}
-				<button class="active" onclick="selectB(this, this.parentElement.id)">
-			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
-			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[8]}}</button>
-			
-			</td>
-			</tr>
+				{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+				{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[6]}}</button>
+				{%if market[7] == best_draw|string%}
+					<button class="active" onclick="selectB(this, this.parentElement.id)">
+				{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+				{%endif%}  <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[7]}}</button>
+				{%if market[8] == best_away|string%}
+					<button class="active" onclick="selectB(this, this.parentElement.id)">
+				{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+				{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[8]}}</button>
+				
+				</td>
+				</tr>
+			{%endif%}
 			{%endfor%}
 			{%for market in other_markets%}
-			<tr>
-			{%set mkt=market[2]%}
-			<td class="mkt">{{mkt}}</td>
-			<td class="odds" id="{{market[8]}}">
-			{%if market[3] == best_home|string%}
-				<button class="active" onclick="selectB(this, this.parentElement.id)">
-			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
-			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[3]}}</button>
-			{%if market[4] == best_draw|string%}
-				<button class="active" onclick="selectB(this, this.parentElement.id)">
-			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
-			{%endif%}  <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[4]}}</button>
-			{%if market[5] == best_away|string%}
-				<button class="active" onclick="selectB(this, this.parentElement.id)">
-			{%else%}<button  onclick="selectB(this, this.parentElement.id)">
-			{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[5]}}</button>
-			
-			</td>
-			</tr>
+			{%if [market[3], market[4],market[5]] in market_odds[0:5]%}
+				<tr>
+				{%set mkt=market[2]%}
+				<td class="mkt">{{mkt}}</td>
+				<td class="odds" id="{{market[8]}}">
+				{%if market[3] == best_home|string%}
+					<button class="active" onclick="selectB(this, this.parentElement.id)">
+				{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+				{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[3]}}</button>
+				{%if market[4] == best_draw|string%}
+					<button class="active" onclick="selectB(this, this.parentElement.id)">
+				{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+				{%endif%}  <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[4]}}</button>
+				{%if market[5] == best_away|string%}
+					<button class="active" onclick="selectB(this, this.parentElement.id)">
+				{%else%}<button  onclick="selectB(this, this.parentElement.id)">
+				{%endif%} <i class="fa fa-caret-up" aria-hidden="true" style="display: none;"></i> {{market[5]}}</button>
+				
+				</td>
+				</tr>
+			{%endif%}
 			{%endfor%}
 
 		{%else%}
@@ -305,7 +321,7 @@ body{
 <span class="b-odds"><button >(2) {{max_percent[0][2]}}</button></span>
 </div>
 {%else%}
-<p>Login to view results</p>
+<p>Login to view results</p><br><br>
 <div class="bet-odds">
 <span class="b-odds"><button>(1) </button></span>
 <span class="b-odds"><button>(X) </button></span>
@@ -322,6 +338,9 @@ body{
 <div id="combinations" class="combinations" style="width: 100%;">
 <div class="bets">Odds<div class="res">Output</div></div>
 {%if session.get('user') != None%}{%if n == 0%}<div ><center><h6>Select a match to view possible Combinations</h6></center></div>{%endif%}
+{%if lcm == 0%}
+<p id="not">All combinations were below 1,<br><a style="cursor: pointer;text-decoration: underline;color: blue;" onclick="loadCombination('>~')">Show Results</a></p>
+{%endif%}
 <div id="comb-load">{{cm|safe}}</div>
 {%else%}<div ><center><h6>Login to view combination results</h6></center></div>{%endif%}</div>
 
@@ -364,9 +383,22 @@ function loadCombination(val){
 	var x= document.getElementById("comb-load");
 	console.log(val)
 	if(val == "~"){
-		x.innerHTML= "{{cm|safe}}";
-	}else{		
-		x.innerHTML= "{{cm_p|safe}}";
+		{%if lcm != 0%}
+			x.innerHTML= "{{cm|safe}}";
+		{%else%}
+			document.getElementById("not").style.display='none';
+			x.innerHTML= "{{cma|safe}}";
+		{%endif%}
+	}else if(val == "%"){		
+		{%if lcm != 0%}
+			x.innerHTML= "{{cm_p|safe}}";
+		{%else%}
+			document.getElementById("not").style.display='none';
+			x.innerHTML= "{{cma_p|safe}}";
+		{%endif%}
+	}else if(val == ">~"){
+		document.getElementById("not").style.display='none';
+		x.innerHTML= "{{cma|safe}}";
 	}
 }
 dragElement(document.getElementById("mydiv"));

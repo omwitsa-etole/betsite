@@ -22,6 +22,16 @@ def get_code():
 	pass
 
 def DBO():
+	try:
+		db = mysql.connector.connect(host="localhost",    # your host, usually localhost
+		     user="root",         # your username
+		     passwd="root",  # your password
+		     db="askabcry_betting")
+		return db
+	except Exception as e:
+		print(str(e))
+		pass
+		
 	
 	while True:
 		try:
@@ -38,17 +48,27 @@ def DBO():
 
 	return db
 
+def getRand(vals):
+	return random.choice(vals)
+
+def getPower(n):
+	
+	return n*n*n
+
 def calc(a, b, c):
 	v1 = 1/a
 	v2 = 1/b
 	v3 = 1/b
 	return v1+v2+v3
 
+
 class Combine:
 	def __init__(self, markets, user):
 		self.user  = user
 		self.combination = []
 		self.combination_p= []
+		self.combination_above = []
+		self.combination_above_p = []
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
@@ -61,42 +81,83 @@ class Combine:
 			db.commit()
 			db.close()
 		print(markets)
-		allcombinations = list(itertools.product(markets))
-		print(allcombinations)
-		count = 0
 		self.max_percent = 0
 		self.max_odds = []
-		for c in allcombinations:
-			for y in c:
+		self.getCombinations(markets)
+		
+	def getCombinations(self,ms):
+		count = 0
+
+		ls = ms
+		l = ls
+		cn = getPower(len(l))
+		while True:
+
+			if len(ls) >= cn:
+				break
+			for i in range(0,len(l)):
+				x = l[i][0]
+				print(x)
+				cnt = 0
+				l1 = []
+				l2 = []
+				while True:
+					try:
+						l1.append(l[i-cnt][1])
+						l2.append(l[i-cnt][2])
+						cnt = cnt+1
+					except:
+						break
+
+				
+				y = getRand(l1)
+				z = getRand(l2)
+				m = [x,y,z]
+				ls.append(m)
 				try:
 					res = []
-					a = y[0]
-					b = y[1]
-					c = y[2]
+					a = x
+					b = y
+					c = z
 					val = calc(float(a),float(b),float(c))
 					if val < 1:
 						if val*100 > self.max_percent:
 							self.max_percent = val*100
-							self.max_odds = y
-						per = [y, val*100]
-						res = [y, float(val)]
+							self.max_odds = m
+						per = [m, val*100]
+						res = [m, float(val)]
 						self.add_list(res, "~")
 						self.add_list(per, "%")
-					break
+					else:
+						per = [m, val*100]
+						res = [m, float(val)]
+						self.add_list(res, ">~")
+						self.add_list(per, ">%")
 				except Exception as e:
 					print(str(e))
 					pass
-		
 	def add_list(self,res,md):
 		if md == "~":
-			self.combination.append(res)
+			if res not in self.combination:
+				self.combination.append(res)
 		if md == "%":
-			self.combination_p.append(res)
+			if res not in self.combination_p:
+				self.combination_p.append(res)
+		if md == ">~":
+			if res not in self.combination_above:
+				self.combination_above.append(res)
+		if md == ">%":
+			if res not in self.combination_above_p:
+				self.combination_above_p.append(res)
 	def get_list(self,md):
 		if md == "~":
 			return self.combination
 		if md == "%":
 			return self.combination_p
+		if md == ">~":
+			return self.combination_above
+		if md == ">%":
+			return self.combination_above_p
 	def get_max(self):
 		return [self.max_odds,self.max_percent]
 	def add_database(self, res):
@@ -495,10 +556,12 @@ def gethomeMatch(match):
 			#print(best_away)
 			for mk in markets:
 				r = [mk[6], mk[7],mk[8]]
-				market_odds.append(r)
+				if r not in market_odds:
+					market_odds.append(r)
 			for mk in other_markets:
 				r = [mk[3],mk[4],mk[5]]
-				market_odds.append(r)
+				if r not in market_odds:
+					market_odds.append(r)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
@@ -506,17 +569,27 @@ def gethomeMatch(match):
 			db.close()
 		
 		if session.get("user") is not None:
-			n = len(market_odds)
-			ck = Combine(market_odds, session["user"])			
+			n = len(market_odds[0:5])
+			ck = Combine(market_odds[0:5], session["user"])				
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
+			combinations_above = ck.get_list(">~")
+			combinations_above_p = ck.get_list(">%")
 			cm = ""
 			for combination in combinations:
 				cm = cm+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			cm_p = ""
 			for combination in combinations_p:
 				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			cma = ""
+			for combination in combinations_above:
+				cma = cma+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			cma_p = ""
+			for combination in combinations_above_p:
+				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
+			lcm = len(combinations)
+			
 		return render_template("homematch.html", **locals())
 
 @app.route("/bookmaker/match/<match>")
@@ -610,28 +683,39 @@ def getBookMarkets(match):
 			#print(best_away)
 			for mk in markets:
 				r = [mk[6], mk[7],mk[8]]
-				market_odds.append(r)
+				if r not in market_odds:
+					market_odds.append(r)
 			for mk in other_markets:
 				r = [mk[3],mk[4],mk[5]]
-				market_odds.append(r)
+				if r not in market_odds:
+					market_odds.append(r)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
-		
+	
 		if session.get("user") is not None:
-			n = len(market_odds)
-			ck = Combine(market_odds, session["user"])			
+			n = len(market_odds[0:5])
+			ck = Combine(market_odds[0:5], session["user"])			
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
+			combinations_above = ck.get_list(">~")
+			combinations_above_p = ck.get_list(">%")
 			cm = ""
 			for combination in combinations:
 				cm = cm+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			cm_p = ""
 			for combination in combinations_p:
 				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			cma = ""
+			for combination in combinations_above:
+				cma = cma+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
+			cma_p = ""
+			for combination in combinations_above_p:
+				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
+			lcm = len(combinations)
 		return render_template("bookmatch.html", **locals())
 
 @app.route("/user/combination")
