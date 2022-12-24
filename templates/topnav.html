@@ -100,12 +100,15 @@ Countries
 <a href="{{url_for('home')}}"><i class="fa fa-home" aria-hidden="true"></i></a>
 </div>
 <div class="book-makers">
-<a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'book-makers')"><i class="fa fa-futbol-o" aria-hidden="true"></i> Bookmakers <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+<a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'book-makers')"><i class="fa fa-futbol-o" aria-hidden="true"></i> Bookmakers <i class="fa fa-caret-down" aria-hidden="true"></i>
+<span id="book-filter"></span>
+</a>
 <div class="drop-up" id="book-makers" style="display: none;">
 <input id="search-books" placeholder="search country"  onkeyup="filterCountries()">
 <div class="drop-list" id="book-list">
-<button onclick="filterB('ken')"><span>Kenya</span></button>
-<button onclick="filterB('ng')"><span>Nigeria</span></button>
+{%for link in all_links%}
+	<button onclick="filterB(this.title)" title="{{link}}"><span>{{link}}</span></button>
+{%endfor%}
 </div>
 <div class="drop-btm">
 <a>All bookmakers</a> 

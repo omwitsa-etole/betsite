@@ -158,7 +158,7 @@ body{
 		{%else%}
 			{% set match_teams = match[5].replace("—", " vs ")%}
 		{%endif%}
-		<span style="position: absolute;top: 0;left: 1%;font-size: 18px;">Time: {{match[3]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i></span>
+		<span style="position: absolute;top: 0;left: 1%;text-align: left;width: 90%;font-size: 18px;">Time: {{match[3]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i> <a style="float: right;text-decoration: none;">League: {{match[0]}}</a></span>
 		<div class="match" onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'" style="position: absolute;top: 30px;width: 100%;text-align: center;font-size: 18px;">
 		<a href="{{url_for('gethomeMatch', match=match[4])}}">{{match_teams}}</a>
 		</div>

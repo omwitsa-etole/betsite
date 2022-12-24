@@ -200,13 +200,21 @@ def home():
 	#print(session.get("user"))
 	#"""
 	league = request.args.get("league")
-
+	country = request.args.get("filter")
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
 		if league != None:
 			ll = "%"+league+"%"
-			cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
+			if country != None:
+				cur.execute("SELECT * FROM home_matches where league =%s or league like %s and country=%s", (league,ll,country, ))
+				matches = cur.fetchall()
+			else:
+				
+				cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
+				matches = cur.fetchall()
+		elif country != None and league == None:
+			cur.execute("SELECT * FROM home_matches where country=%s", (country, ))
 			matches = cur.fetchall()
 		else:		
 			cur.execute("SELECT * FROM home_matches")
@@ -224,6 +232,7 @@ def home():
 
 @app.route("/topnav")
 def getNav():
+	all_links = ['Nigeria', 'Kenya', 'Ghana', 'Gambia', 'Jamaica', 'Morocco', 'Niger', 'Mali', 'Mauritius', 'Rwanda', 'Senegal', 'Tanzania', 'Uganda', 'South Africa', 'Zambia', 'Zimbabwe']
 	return render_template("topnav.html", **locals())
 
 @app.route("/best-today", methods=['GET'])

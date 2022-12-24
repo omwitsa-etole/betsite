@@ -18,6 +18,10 @@ $(document).ready(function(){
 		console.log(y)
 		y.style.display = "block";	
 		$("#form-l").load("/login");
+	}else if(location.search == "?filter="){
+		let x = location.search
+		var z = document.getElementById("book-filter");
+		z.innerText = x
 	}else{
 		var x = document.getElementById("form-l");
 		if(x){
@@ -137,9 +141,7 @@ function filterCountries(){
 
 function filterB(val){
 	x = location.search;
-	if(x!= ""){
-		location.href = location.href+"&&filter="+val
-	}else{
-		location.search = "?filter="+val
-	}
+	y = location.href;
+	console.log(x);
+	location.search = "?filter="+val
 }
