@@ -314,11 +314,13 @@ def getBookmaker(book):
 		book_league = book.replace("-", " / ")
 		book_league = book_league.upper()
 		league = request.args.get("league")
+		bk = "%"+book+"%"
+		print(bk)
 		if league == None:
 			try:
 				db = DBO()
 				cur = db.cursor(buffered=True)
-				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s", (book,))
+				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s or bookmark like %s", (book,bk,))
 				matches = cur.fetchall()
 				#print(matches[0][5])
 			except Exception as e:
@@ -330,7 +332,7 @@ def getBookmaker(book):
 			try:
 				db = DBO()
 				cur = db.cursor(buffered=True)
-				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s and league=%s", (book, league,))
+				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s or bookmark like %s and league=%s", (book, bk,league,))
 				matches = cur.fetchall()
 				
 			except Exception as e:
@@ -411,10 +413,11 @@ def search():
 		if "vs" in match:
 			match = match.replace("vs", "-")
 		match = "%"+match+"%"
+		bk = "%"+bookmark+"%"
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmakers where bookmark=%s and match_teams LIKE %s", (bookmark, match, ))
+			cur.execute("SELECT * FROM bookmakers where bookmark=%s or bookmark like %s and match_teams LIKE %s", (bookmark,bk, match, ))
 			book_matches = cur.fetchall()
 			cur.execute("SELECT * FROM bookmakers where id is null")
 			home_matches = cur.fetchall()
@@ -428,15 +431,16 @@ def search():
 		if book != None:
 			old_book = book+"-football"
 			book = "%"+book+"%"
+			bk = "%"+book+"%"
 			query = request.args.get("type")
 			if query != None and query != "":
 				query = "%"+query+"%"
 				try:
 					db = DBO()
 					cur = db.cursor(buffered=True)
-					cur.execute("SELECT * FROM home_matches where bookmark=%s and match_teams like %s or league like %s", (old_book, query, query,))
+					cur.execute("SELECT * FROM home_matches where bookmark=%s or bookmark like %s and match_teams like %s or league like %s", (old_book,bk, query, query,))
 					home_matches = cur.fetchall()
-					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s and match_teams like %s or league like %s", (old_book, query, query, ))
+					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s or bookmark like %s and match_teams like %s or league like %s", (old_book,bk, query, query, ))
 					matches = cur.fetchall()
 					print("here")
 				except Exception as e:
