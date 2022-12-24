@@ -151,6 +151,8 @@ body{
 	
 	<div class="main-body">
 	{%for match in matches%}
+		{%if 'FT' in match[3] or 'PEN' in match[3] or 'OT' in match[3]%}
+		{%else%}
 		{%set m_date = match[2]%}
 	<div class="match-box">
 		{%if '-' in match[5]%}
@@ -168,6 +170,7 @@ body{
 		<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">{{match[8]}}<p class="odd-mkt">{{match[15]}}</p></button></span>
 		</div>
 	</div>	
+		{%endif%}
 	{%endfor%}
 	</div>
 </div>
