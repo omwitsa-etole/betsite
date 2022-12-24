@@ -56,10 +56,8 @@ def getPower(n):
 	return n*n*n
 
 def calc(a, b, c):
-	v1 = 1/a
-	v2 = 1/b
-	v3 = 1/b
-	return v1+v2+v3
+	
+	return (1/a)+(1/b)+(1/c)
 
 
 class Combine:
@@ -80,10 +78,11 @@ class Combine:
 		finally:
 			db.commit()
 			db.close()
-		print(markets)
 		self.max_percent = 0
 		self.max_odds = []
-		self.getCombinations(markets)
+		self.markets = markets
+		self.cnt = 0
+		self.getCombinations(markets[0:5])
 		
 	def getCombinations(self,ms):
 		count = 0
@@ -97,7 +96,6 @@ class Combine:
 				break
 			for i in range(0,len(l)):
 				x = l[i][0]
-				print(x)
 				cnt = 0
 				l1 = []
 				l2 = []
@@ -120,7 +118,9 @@ class Combine:
 					b = y
 					c = z
 					val = calc(float(a),float(b),float(c))
+					
 					if val < 1:
+						
 						if val*100 > self.max_percent:
 							self.max_percent = val*100
 							self.max_odds = m
@@ -133,9 +133,11 @@ class Combine:
 						res = [m, float(val)]
 						self.add_list(res, ">~")
 						self.add_list(per, ">%")
+					self.cnt = self.cnt + 1
 				except Exception as e:
 					print(str(e))
 					pass
+		
 	def add_list(self,res,md):
 		if md == "~":
 			if res not in self.combination:
@@ -584,7 +586,7 @@ def gethomeMatch(match):
 		
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
-			ck = Combine(market_odds[0:5], session["user"])				
+			ck = Combine(market_odds, session["user"])				
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
@@ -712,7 +714,7 @@ def getBookMarkets(match):
 	
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
-			ck = Combine(market_odds[0:5], session["user"])			
+			ck = Combine(market_odds, session["user"])			
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
