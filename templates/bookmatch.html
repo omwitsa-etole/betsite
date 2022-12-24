@@ -332,7 +332,9 @@ body{
 <div class="bets">Odds<div class="res">Output</div></div>
 {%if session.get('user') != None%}{%if n == 0%}<div ><center><h6>Select a match to view possible Combinations</h6></center></div>{%endif%}
 {%if lcm == 0%}
+{%if lmm != 0%}
 <p id="not">All combinations were above 1,<br><a style="cursor: pointer;text-decoration: underline;color: blue;" onclick="loadCombination('>~')">Show Results</a></p>
+{%endif%}
 {%endif%}
 <div id="comb-load">{{cm|safe}}</div>
 {%else%}<div ><center><h6>Login to view combination results</h6></center></div>{%endif%}</div>
