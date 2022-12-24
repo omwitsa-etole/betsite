@@ -204,15 +204,15 @@ def home():
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
-		if league != None:
+		if league != None and country != None:
 			ll = "%"+league+"%"
-			if country != None:
-				cur.execute("SELECT * FROM home_matches where league =%s or league like %s and country=%s", (league,ll,country, ))
-				matches = cur.fetchall()
-			else:
-				
-				cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
-				matches = cur.fetchall()
+			
+			cur.execute("SELECT * FROM home_matches where league=%s and country=%s", (league,country, ))
+			matches = cur.fetchall()
+		elif league != None and country == None:
+			ll = "%"+league+"%"
+			cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
+			matches = cur.fetchall()
 		elif country != None and league == None:
 			cur.execute("SELECT * FROM home_matches where country=%s", (country, ))
 			matches = cur.fetchall()

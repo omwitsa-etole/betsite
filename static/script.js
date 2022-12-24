@@ -18,10 +18,6 @@ $(document).ready(function(){
 		console.log(y)
 		y.style.display = "block";	
 		$("#form-l").load("/login");
-	}else if(location.search == "?filter="){
-		let x = location.search
-		var z = document.getElementById("book-filter");
-		z.innerText = x
 	}else{
 		var x = document.getElementById("form-l");
 		if(x){
@@ -39,6 +35,24 @@ setInterval(time, 1000);
 
 
 function time() {
+	  if(location.hash.includes("#time")){
+		var n = document.getElementById("by-time");
+		n.setAttribute("style", "background: black;color: yellow;")
+	  }
+	  if(location.search.includes("filter=")){
+		let x = location.search;
+		if(x.includes("&&")){
+			let r = x.split("&&");
+			x = r[1];
+			x = x.replace("filter=", "");
+		}else{
+			x = x.replace("?filter=", "");
+		}
+		var z = document.getElementById("book-filter");
+		var m = document.getElementById("bookm-makers");
+		z.innerText = x;
+		m.setAttribute("style", "background: black;")
+	  }
 	  var span_time = document.getElementById('time-now');
 	  var d = new Date();
 	  var s = d.getSeconds();
@@ -142,6 +156,14 @@ function filterCountries(){
 function filterB(val){
 	x = location.search;
 	y = location.href;
-	console.log(x);
-	location.search = "?filter="+val
+	if(x.includes("&&")){
+		let r = x.split("&&");
+		console.log(r);
+		x = r[0];
+		location.search = x+"&&filter="+val;	
+	}else if(x.includes("?league")){
+		location.search = x+"&&filter="+val;		
+	}else{
+		location.search = "?filter="+val
+	}
 }
