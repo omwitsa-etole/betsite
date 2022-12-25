@@ -68,35 +68,21 @@ body{
 
 .dropdown:hover .dropdown-content {display: block;}
 .main-body{
-	position: absolute;
-	top: 150px;
-	left: 0;
+	position: relative;
+	margin-top: 150px;
+	margin-left: 200px;
 	background: #ddd;
-	width: 100%;
+	width: 80%;
 	overflow: auto;
 	height: 600px;
 }
-.match-box{
-	width: 95%;
-	margin-left: 2.5%;
-	margin-top: 15px;
-	height: 120px;
-	border-radius: 10px;
-	background: white;
-	position: relative;
-	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-}
-.match-box a{
-	color: black;
-	font-size: 18px;
-	text-decoration: none;
-}
-.match-box a:hover{
-	text-decoration: underline;
-}
+
 
 .match:hover{
-	cursor:pointer;
+	
+
+
+cursor:pointer;
 }
 .active{
 	background: #111;
@@ -149,31 +135,55 @@ body{
 		
 	</div>
 	
-	<div class="main-body">
-	{%for match in matches%}
+	
+</div>
+<div class="main-body">
+{%for match in matches%}
 		{%if 'FT' in match[3] or 'PEN' in match[3] or 'OT' in match[3]%}
 		{%else%}
+		{%set m = match[5].split("-")%}
+		{%set home_team = match[17]%}
+		{%set away_team = match[18]%}
+		{%if home_team == ""%}
+			
+			{%set home_team = m[0]%}
+		{%endif%}
+		{%if match[18] == ""%}
+			{%set away_team = m[1]%}
+		{%endif%}
 		{%set m_date = match[2]%}
-	<div class="match-box">
-		{%if '-' in match[5]%}
-			{% set match_teams = match[5].replace("-", " vs ")%}
-		{%else%}
-			{% set match_teams = match[5].replace("—", " vs ")%}
-		{%endif%}
-		<span style="position: absolute;top: 0;left: 1%;text-align: left;width: 100%;overflow: hidden;font-size: 18px;">Time: {{match[3]}} <i style="margin-left: 20px;"> Date: {{m_date}}</i> <a style="float: right;text-decoration: none;">League: {{match[0]}}</a></span>
-		<div class="match" onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'" style="position: absolute;top: 40px;width: 100%;text-align: center;font-size: 18px;">
-		<a href="{{url_for('gethomeMatch', match=match[4])}}">{{match_teams}}</a>
+		<div class="match-box">
+		<div class="match-l">
+		<a>League: {{match[0]}}</a>
+		<div style="margin-left: 5%;"  onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'">
+		<p>{{home_team}}</p>
+		<p>{{away_team}}</p>
 		</div>
-		<div class="bet-odds" id="{{match[0]}}">
-		<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">{{match[6]}}<p class="odd-mkt">{{match[13]}}</p></button></span>
-		<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">{{match[7]}}<p class="odd-mkt">{{match[14]}}</p></button></span>
-		<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">{{match[8]}}<p class="odd-mkt">{{match[15]}}</p></button></span>
+		<div style="position: absolute;bottom: 1%;"><a>Time: {{match[3]}} </a>  <a>Date: {{m_date}}</a></div>
 		</div>
-	</div>	
+		<div class="match-r">
+		<div class="matchodd">
+		1
+		<p>{{match[6]}}</p>
+		<div class="odd-mkt">{{match[13]}}</div>
+		</div>
+		<div class="matchodd">
+		x
+		<p>{{match[7]}}</p>
+		<div class="odd-mkt">{{match[14]}}</div>
+		</div>
+		<div class="matchodd">
+		2
+		<p>{{match[8]}}</p>
+		<div class="odd-mkt">{{match[15]}}</div>
+		</div>
+
+		</div>
+		</div>
 		{%endif%}
-	{%endfor%}
-	</div>
+{%endfor%}
 </div>
+
 <div style="position: fixed;z-index: 200;width: 100%;height: 100%;top: 0;left: 0;display: none;" id="form-l">
 </div>
 <div class="results" style="z-index: 1;" id="mydiv">
