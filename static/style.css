@@ -429,7 +429,7 @@
 	
 }
 .by-cal{
-	width: 80px;
+	width: 100px;
 	height: 35px;
 	background: #ddd;
 	color: black;
@@ -466,6 +466,12 @@
 }
 .cal{
 	height: 250px;
+	
+}
+.cal input{
+	padding: 12px;
+	border-radius: 10px;
+
 }
 #search-books{
 	width: 90%;
