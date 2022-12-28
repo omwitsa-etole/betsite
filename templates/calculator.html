@@ -2,6 +2,7 @@
 <html lang="en" class="rs fw" >
   <head>
 	<link rel="stylesheet" href="{{url_for('static', filename='application.css')}}">
+	<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <script>
     var prefixData = document.documentElement.dataset.prefix;
     if (prefixData) {
@@ -20,10 +21,67 @@
 
 
   <script src="{{url_for('static', filename='application.js')}}" id="main-script" async="async"></script>
+<style>
+.dropdown {
+  position: relative;
+  display: inline-block;
+  float: right;
+  margin-right: 20px;
+}
+.dropdown img{
+	border-radius: 50%;
+	margin-top: 15px;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  right: 0;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  color: black;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+</style>
   
 </head>
 
   <body id="simple">
+<div class="t-ody">
+<h2 style="position: absolute;left: 2%;color: yellow;" onclick="location.href='{{url_for('home')}}'">SureBet</h2>
+
+
+<div class="dropdown">
+{%if session.get("user") != None %}
+<img src="{{url_for('static', filename='avatar.jpg')}}"></img>
+<div class="dropdown-content">
+	<a>Profile</a>
+	<a href="{{url_for('logout')}}">Log out</a>
+	
+</div>
+{%else%}
+<div class="login-content">
+	<a href="/?login"">Log in</a>
+	<a>Sign Up</a>
+</div>
+{%endif%}
+</div>
+</div>
 <script>
 //<![CDATA[
 var Calculator = {
@@ -39,7 +97,7 @@ var Calculator = {
 
 //]]>
 </script>
-<main class="tool">
+<main class="tool" style="margin-top: 70px;">
   <div class="d-flex">
     <h1 class="title">Online surebet calculator</h1>
     <div style="" class="profit-container">

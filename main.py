@@ -687,7 +687,7 @@ def gethomeMatch(match):
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
 			ck = Combine(market_odds, session["user"])		
-			session["obj"] = ck		
+			#session["obj"] = ck		
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
@@ -855,7 +855,7 @@ def getBookMarkets(match):
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
 			ck = Combine(market_odds, session["user"])	
-			session["obj"] = ck			
+			#session["obj"] = ck			
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
