@@ -153,7 +153,8 @@ body{
 
 
 {%for match in matches%}
-		
+		{%if match[2] == '00:00:00'%}
+		{%else%}
 		{%set m_date = match[2]%}
 		{%set m = match[5].split("-")%}
 		{%set home_team = match[13]%}
@@ -194,7 +195,7 @@ body{
 
 		</div>
 		</div>
-		
+		{%endif%}
 {%endfor%}
 
 </div>
