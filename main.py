@@ -82,7 +82,7 @@ class Combine:
 		self.max_odds = []
 		self.markets = markets
 		self.cnt = 0
-		self.getCombinations(markets[0:5])
+		self.getCombinations(markets[0:6])
 		
 	def getCombinations(self,ms):
 		count = 0
