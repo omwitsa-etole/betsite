@@ -709,7 +709,7 @@ def gethomeMatch(match):
 			for combination in combinations_above_p:
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
-			session["odss"] = max_percent
+			session["odds"] = max_percent
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("homematch.html", **locals())
