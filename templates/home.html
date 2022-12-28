@@ -139,7 +139,7 @@ cursor:pointer;
 </div>
 <div class="main-body">
 {%for match in matches%}
-		{%if match[3] == '00:00:00'%}
+		{%if match[3] == '0:00:00'%}
 		{%else%}
 		{%set m = match[5].split(" - ")%}
 		{%set home_team = match[17]%}
