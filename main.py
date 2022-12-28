@@ -203,20 +203,33 @@ def home():
 	#"""
 	league = request.args.get("league")
 	country = request.args.get("filter")
+	time_filter = request.args.get("time")
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
-		if league != None and country != None:
+		if league != None and country != None and time_filtr == None:
 			ll = "%"+league+"%"
 			
 			cur.execute("SELECT * FROM home_matches where league=%s and country=%s", (league,country, ))
 			matches = cur.fetchall()
-		elif league != None and country == None:
+		elif league != None and country == None and time_filter == None:
 			ll = "%"+league+"%"
 			cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
 			matches = cur.fetchall()
-		elif country != None and league == None:
+		elif country != None and league == None and time_filter == None:
 			cur.execute("SELECT * FROM home_matches where country=%s", (country, ))
+			matches = cur.fetchall()
+		elif time_filter != None and league == None and country == None:
+			cur.execute("SELECT * FROM home_matches ORDER BY match_time asc")
+			matches = cur.fetchall()
+		elif time_filter != None and league != None and country == None:
+			ll = "%"+league+"%"
+			cur.execute("SELECT * FROM home_matches where league =%s or league like %s ORDER BY match_time asc", (league,ll, ) )
+			matches = cur.fetchall()
+		elif league != None and country != None and time_filter != None:
+			ll = "%"+league+"%"
+			
+			cur.execute("SELECT * FROM home_matches where league=%s or league like %s and country=%s ORDER BY match_time asc", (league, ll,country, ))
 			matches = cur.fetchall()
 		else:		
 			cur.execute("SELECT * FROM home_matches")
@@ -234,7 +247,7 @@ def home():
 
 @app.route("/topnav")
 def getNav():
-	all_links = ['Nigeria', 'Kenya', 'Ghana', 'Gambia', 'Jamaica', 'Morocco', 'Niger', 'Mali', 'Mauritius', 'Rwanda', 'Senegal', 'Tanzania', 'Uganda', 'South Africa', 'Zambia', 'Zimbabwe']
+	all_links = ['Nigeria', 'Kenya', 'Ghana', 'Gambia', 'Jamaica', 'Morocco', 'Niger', 'Mali', 'Mauritius', 'Rwanda', 'Senegal','Uganda', 'South Africa', 'Zambia', 'Zimbabwe']
 	return render_template("topnav.html", **locals())
 
 @app.route("/best-today", methods=['GET'])
@@ -316,9 +329,10 @@ def getBookmaker(book):
 		book_league = book.replace("-", " / ")
 		book_league = book_league.upper()
 		league = request.args.get("league")
+		time_filter = request.args.get("time")
 		bk = "%"+book+"%"
-		print(bk)
-		if league == None:
+		#print(bk)
+		if league == None and time_filter == None:
 			try:
 				db = DBO()
 				cur = db.cursor(buffered=True)
@@ -327,6 +341,31 @@ def getBookmaker(book):
 				#print(matches[0][5])
 			except Exception as e:
 				db.rollback();print(str(e))
+				pass
+			finally:
+				db.close()
+		elif league == None and time_filter != None:
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s or bookmark like %s ORDER BY match_time asc", (book,bk,))
+				matches = cur.fetchall()
+				#print(matches[0][5])
+			except Exception as e:
+				db.rollback();print(str(e))
+				pass
+			finally:
+				db.close()
+		elif league != None and time_filter != None:
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s or bookmark like %s and league=%s ORDER BY match_time asc", (book, bk,league,))
+				matches = cur.fetchall()
+				
+			except Exception as e:
+				db.rollback()
+				print(str(e))
 				pass
 			finally:
 				db.close()

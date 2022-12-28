@@ -141,7 +141,7 @@ cursor:pointer;
 {%for match in matches%}
 		{%if 'FT' in match[3] or 'PEN' in match[3] or 'OT' in match[3]%}
 		{%else%}
-		{%set m = match[5].split("-")%}
+		{%set m = match[5].split(" - ")%}
 		{%set home_team = match[17]%}
 		{%set away_team = match[18]%}
 		{%if home_team == ""%}

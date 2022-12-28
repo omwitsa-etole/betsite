@@ -35,7 +35,7 @@ setInterval(time, 1000);
 
 
 function time() {
-	  if(location.hash.includes("#time")){
+	  if(location.search.includes("time=")){
 		var n = document.getElementById("by-time");
 		n.setAttribute("style", "background: black;color: yellow;")
 	  }
