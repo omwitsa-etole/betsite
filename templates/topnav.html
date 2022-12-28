@@ -120,18 +120,20 @@ Countries
 </div>
 </div>
 </div>
-<div class="by-time" onclick="location.search='time'" id="by-time">
+<div class="by-time" onclick="" id="by-time">
 <a href="?time" onclick="makeActive(this.parentElement, 'null')"><i class="fa fa-clock" aria-hidden="true"></i> By Time</a>
 </div>
 <div class="by-cal" >
 <a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'calculator')"><i class="fa fa-calculator" aria-hidden="true"></i> Calculator</a>
 <div class="cal" id="calculator" style="display: none;color: black;">
-<a style="float: right;height: 10px;cursor: pointer;color: red;" onclick="this.parentElement.style.display='none'"><i class="fa fa-window-close" aria-idden="true"></i></a>
-
-
+<a style="float: right;height: 10px;cursor: pointer;color: red;" onclick="this.parentElement.style.display='none'"><i class="fa fa-window-close" aria-idden="true"></i></a><br>
 {%if session.get("match") != None%}
+{%if session.get("obj")[1] != 0%}
+<p>Odds <span class="b-odds"><button>{{session.obj[0][1]}}<button></span><span class="b-odds"><button>{{session.obj[0][2]}}</button></span><span class="b-odds"><button>{{session.obj[0][2]}}</button></span><br>
 <p>Go to Calculator <a href="{{url_for('getCalc')}}?match={{session['match']}}">Calculator</a></p>
-
+{%else%}
+<p>All combination results were over 1, no suitable odds found,try another match</p>
+{%endif%}
 {%else%}
 <p>Select A Match to perfom calculation</p>
 {%endif%}

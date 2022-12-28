@@ -201,49 +201,53 @@ def logout():
 def home():
 	#print(session.get("user"))
 	#"""
+	country = 'home'
 	league = request.args.get("league")
-	country = request.args.get("filter")
+	count = request.args.get("filter")
+	if count != None:
+		country = count
 	time_filter = request.args.get("time")
-	try:
-		db = DBO()
-		cur = db.cursor(buffered=True)
-		if league != None and country != None and time_filtr == None:
-			ll = "%"+league+"%"
-			
-			cur.execute("SELECT * FROM home_matches where league=%s and country=%s", (league,country, ))
-			matches = cur.fetchall()
-		elif league != None and country == None and time_filter == None:
-			ll = "%"+league+"%"
-			cur.execute("SELECT * FROM home_matches where league =%s or league like %s and country='home'", (league,ll, ))
-			matches = cur.fetchall()
-		elif country != None and league == None and time_filter == None:
-			cur.execute("SELECT * FROM home_matches where country=%s", (country, ))
-			matches = cur.fetchall()
-		elif time_filter != None and league == None and country == None:
-			cur.execute("SELECT * FROM home_matches where country='home' ORDER BY match_time asc")
-			matches = cur.fetchall()
-		elif time_filter != None and league != None and country == None:
-			ll = "%"+league+"%"
-			cur.execute("SELECT * FROM home_matches where league =%s or league like %s and country='home' ORDER BY match_time asc", (league,ll, ) )
-			matches = cur.fetchall()
-		elif league != None and country != None and time_filter != None:
-			ll = "%"+league+"%"
-			
-			cur.execute("SELECT * FROM home_matches where league=%s or league like %s and country=%s ORDER BY match_time asc", (league, ll,country, ))
-			matches = cur.fetchall()
-		else:		
-			cur.execute("SELECT * FROM home_matches where country='home'")
-			matches = cur.fetchall()
-		
-	except Exception as e:
-		db.rollback();print(str(e))
-		pass
-	finally:
-		db.close()
+	print(time_filter)
 
+	db = DBO()
+	cur = db.cursor(buffered=True)
+	if league != None and country != None and time_filter == None:
+		ll = "%"+league+"%"
+		
+		cur.execute("SELECT * FROM home_matches where league=%s and country=%s", (league,country, ))
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
+	elif league != None and country == None:
+		ll = "%"+league+"%"
+		cur.execute("SELECT * FROM home_matches WHERE country='home' AND league =%s or league like %s", (league,ll, ))
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
+	elif country != None and league == None:
+		cur.execute("SELECT * FROM home_matches where country=%s", (country, ))
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
+	elif time_filter != None and league == None:
+		cur.execute("SELECT * FROM home_matches where country='home' ORDER BY match_time asc")
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
+	elif time_filter != None and league != None:
+		ll = "%"+league+"%"
+		cur.execute("SELECT * FROM home_matches where country='home' and league =%s or league like %s ORDER BY match_time asc", (league,ll, ) )
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
+	elif league != None and country != None and time_filter != None:
+		ll = "%"+league+"%"
+		
+		cur.execute("SELECT * FROM home_matches where league=%s or league like %s and country=%s ORDER BY match_time asc", (league, ll,country, ))
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
+	else:		
+		cur.execute("SELECT * FROM home_matches where country='home'")
+		matches = cur.fetchall()
+		return render_template("home.html", **locals())
 	
 	#matches = []
-	return render_template("home.html", **locals())
+	#return render_template("home.html", **locals())
 
 @app.route("/calculator")
 def getCalc():
@@ -705,6 +709,7 @@ def gethomeMatch(match):
 			for combination in combinations_above_p:
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
+			session["obj"] = max_percent
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("homematch.html", **locals())
@@ -873,6 +878,7 @@ def getBookMarkets(match):
 			for combination in combinations_above_p:
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
+			session["obj"] = max_percent
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("bookmatch.html", **locals())

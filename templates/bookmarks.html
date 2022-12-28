@@ -153,8 +153,7 @@ body{
 
 
 {%for match in matches%}
-		{%if 'FT' in match[2] or 'PEN' in match[2] or 'OT' in match[2]%}
-		{%else%}
+		
 		{%set m_date = match[2]%}
 		{%set m = match[5].split("-")%}
 		{%set home_team = match[13]%}
@@ -195,7 +194,7 @@ body{
 
 		</div>
 		</div>
-		{%endif%}
+		
 {%endfor%}
 
 </div>

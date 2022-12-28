@@ -478,6 +478,9 @@
 	
 	
 }
+.cal p{
+	font-size: 17px;
+}
 .cal input{
 	padding: 12px;
 	border-radius: 10px;
