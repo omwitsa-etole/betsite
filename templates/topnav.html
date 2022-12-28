@@ -128,8 +128,8 @@ Countries
 <div class="cal" id="calculator" style="display: none;color: black;">
 <a style="float: right;height: 10px;cursor: pointer;color: red;" onclick="this.parentElement.style.display='none'"><i class="fa fa-window-close" aria-idden="true"></i></a><br>
 {%if session.get("match") != None%}
-{%if session.get("obj")[1] != 0%}
-<p>Odds <span class="b-odds"><button>{{session["obj"][0][1]}}<button></span><span class="b-odds"><button>{{session["obj"][0][2]}}</button></span><span class="b-odds"><button>{{session["obj"][0][2]}}</button></span><br>
+{%if session.get("odds")[1] != 0%}
+<p>Odds <span class="b-odds"><button>{{session["odss"][0][1]}}<button></span><span class="b-odds"><button>{{session["odds"][0][2]}}</button></span><span class="b-odds"><button>{{session["odds"][0][2]}}</button></span><br>
 <p>Go to Calculator <a href="{{url_for('getCalc')}}?match={{session['match']}}">Calculator</a></p>
 {%else%}
 <p>All combination results were over 1, no suitable odds found,try another match</p>

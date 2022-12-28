@@ -691,7 +691,7 @@ def gethomeMatch(match):
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
 			ck = Combine(market_odds, session["user"])		
-			#session["obj"] = ck		
+				
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
@@ -709,7 +709,7 @@ def gethomeMatch(match):
 			for combination in combinations_above_p:
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
-			session["obj"] = max_percent
+			session["odss"] = max_percent
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("homematch.html", **locals())
@@ -860,7 +860,7 @@ def getBookMarkets(match):
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
 			ck = Combine(market_odds, session["user"])	
-			#session["obj"] = ck			
+					
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
@@ -878,7 +878,7 @@ def getBookMarkets(match):
 			for combination in combinations_above_p:
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
-			session["obj"] = max_percent
+			session["odds"] = max_percent
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("bookmatch.html", **locals())
