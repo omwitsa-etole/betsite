@@ -126,7 +126,7 @@
   display: block;
 }
 .bookmarks a:hover {background-color: #f1f1f1}
-.bookmark:hover .bookmarks{display: block;}
+
 #back{color: black;}
 #back:hover{
 	color: yellow;
@@ -465,7 +465,17 @@
 	color: blue;
 }
 .cal{
-	height: 250px;
+	position: absolute;
+	z-index: 500;
+	left: 0;
+	top: 100%;
+	overflow: auto;
+	background: white;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	border-radius: 20px;
+	height: 200px;
+	width: 250px;
+	
 	
 }
 .cal input{

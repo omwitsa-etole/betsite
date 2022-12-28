@@ -214,17 +214,17 @@ def home():
 			matches = cur.fetchall()
 		elif league != None and country == None and time_filter == None:
 			ll = "%"+league+"%"
-			cur.execute("SELECT * FROM home_matches where league =%s or league like %s", (league,ll, ))
+			cur.execute("SELECT * FROM home_matches where league =%s or league like %s and country='home'", (league,ll, ))
 			matches = cur.fetchall()
 		elif country != None and league == None and time_filter == None:
 			cur.execute("SELECT * FROM home_matches where country=%s", (country, ))
 			matches = cur.fetchall()
 		elif time_filter != None and league == None and country == None:
-			cur.execute("SELECT * FROM home_matches ORDER BY match_time asc")
+			cur.execute("SELECT * FROM home_matches where country='home' ORDER BY match_time asc")
 			matches = cur.fetchall()
 		elif time_filter != None and league != None and country == None:
 			ll = "%"+league+"%"
-			cur.execute("SELECT * FROM home_matches where league =%s or league like %s ORDER BY match_time asc", (league,ll, ) )
+			cur.execute("SELECT * FROM home_matches where league =%s or league like %s and country='home' ORDER BY match_time asc", (league,ll, ) )
 			matches = cur.fetchall()
 		elif league != None and country != None and time_filter != None:
 			ll = "%"+league+"%"
@@ -232,7 +232,7 @@ def home():
 			cur.execute("SELECT * FROM home_matches where league=%s or league like %s and country=%s ORDER BY match_time asc", (league, ll,country, ))
 			matches = cur.fetchall()
 		else:		
-			cur.execute("SELECT * FROM home_matches")
+			cur.execute("SELECT * FROM home_matches where country='home'")
 			matches = cur.fetchall()
 		
 	except Exception as e:
@@ -244,6 +244,30 @@ def home():
 	
 	#matches = []
 	return render_template("home.html", **locals())
+
+@app.route("/calculator")
+def getCalc():
+	match = request.args.get("match")
+	if match == None:
+		return """
+			<div class="t-ody" style="position: relative;background: black;height: 60px;">
+				<h2 style="position: absolute;left: 2%;color: yellow;" onclick="location.href='/'">SureBet</h2><br>
+
+				<div style="float: right;color: white;"><a href='/?login' style="margin-left: 10px;">Login</a><a style="margin-left: 20px;">Signup</a></div>
+				
+				</div><br><center>Select A <a href='/'>match</a> to perfom calculations</center>
+				"""
+	if session.get("user") != None:
+		return render_template("calculator.html", **locals())
+	else:
+		return """
+			<div class="t-ody" style="position: relative;background: black;height: 60px;">
+				<h2 style="position: absolute;left: 2%;color: yellow;" onclick="location.href='/'">SureBet</h2><br>
+
+				<div style="float: right;color: white;"><a href='/?login' style="margin-left: 10px;">Login</a><a style="margin-left: 20px;">Signup</a></div>
+				
+				</div><br><center>Login to Perfom calculations <a href='/?login'>Login</a></center>
+				"""
 
 @app.route("/topnav")
 def getNav():
@@ -522,6 +546,8 @@ def search():
 @app.route("/home/match/<match>")
 def gethomeMatch(match):
 	if match:
+		country = request.args.get("filter")
+		
 		max_percent = [[], 0]
 		market_odds = []
 		x = match.split("-")
@@ -532,6 +558,7 @@ def gethomeMatch(match):
 			cur = db.cursor(buffered=True)
 			cur.execute("SELECT * FROM home_matches WHERE xeid=%s", (xeid,))
 			matches = cur.fetchone()
+			session["match"] = matches[1]
 			match = matches[5]
 			matchteams = match
 			
@@ -550,11 +577,34 @@ def gethomeMatch(match):
 				match = match.replace("hotspur", "")
 			if "lfc" in match:
 				match = match.replace("lfc", "")
+			if "paris saint germain" in match:
+				match = match.replace("paris saint germain", "psg")
 			
 			#print(match)
-			
 			prev_match = prev_match.split("-")
 			match_bd = prev_match
+			hb = "%"+prev_match[0]+"%"
+			ab = "%"+prev_match[1]+"%"
+			home_prev = prev_match[0][0:3]
+			home_prev = "%"+home_prev+"%"
+			away_prev = prev_match[1][1:4]
+			away_prev = "%"+away_prev+"%"
+			home_match = match.split("-")[0][0:3]
+			away_match = match.split("-")[1][1:4]
+			hm = "%"+match.split("-")[0]+"%"
+			am = "%"+match.split("-")[1]+"%"
+			if " " in hm:
+				hm = hm.replace(" ", "")
+			if " " in am:
+				am = am.replace(" ", "")
+			if "psg" in hm:
+				hm = hm.replace("psg", "paris")
+			if "psg" in am:
+				am = am.replace("psg", "paris")
+			
+			#print("select * from bookmark matches where home_team like "+home_match+" or home_team like "+hm+" or home_team like "+home_prev+"")
+			home_match = "%"+home_match+"%"
+			away_match = "%"+away_match+"%"
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
 			prev_match = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][1:3]+"%"
 			prev_match_d = prev_match.replace("-", " - ")
@@ -570,6 +620,11 @@ def gethomeMatch(match):
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
 			match_bb = match_b.replace(" - ", "-")
+			try:
+				prev_match_t = prev_match_t.replace(" ", "")
+			except:
+				pass
+			
 			matchl = match_d[1].split(" ")
 			match_t = "%"+match_d[0] + " - "+ matchl[1]+"%"
 			match_d = match_t.replace(" ", "")
@@ -584,8 +639,11 @@ def gethomeMatch(match):
 			best_draw = None
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
+			cur.execute("select * from bookmark_matches where home_team like %s and away_team like %s or home_team like %s and away_team like %s or home_team like %s and away_team like %s or home_team like %s and away_team like %s",(home_prev,away_prev,home_match,away_match,hb,ab,hm,am,))
+			#cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or home_team like %s or home_team like %s and away_team like %s or away_team like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb,home_prev,home_match,away_prev,away_match, ))
 			markets = cur.fetchall()
+			cur.execute("select * from bookmark_matches where match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
+			marketss = cur.fetchall()
 			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
 			other_markets = cur.fetchall()
 			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
@@ -617,6 +675,9 @@ def gethomeMatch(match):
 				r = [mk[3],mk[4],mk[5]]
 				if r not in market_odds:
 					market_odds.append(r)
+			for mk in marketss:
+				if mk not in markets:
+					markets.append(mk)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
@@ -625,7 +686,8 @@ def gethomeMatch(match):
 		
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
-			ck = Combine(market_odds, session["user"])				
+			ck = Combine(market_odds, session["user"])		
+			session["obj"] = ck		
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")
@@ -650,6 +712,7 @@ def gethomeMatch(match):
 @app.route("/bookmaker/match/<match>")
 def getBookMarkets(match):
 	if match:
+		country = request.args.get("filter")
 		max_percent = [[], 0]
 		market_odds = []
 		x = match.split("-")
@@ -660,11 +723,13 @@ def getBookMarkets(match):
 			cur = db.cursor(buffered=True)
 			cur.execute("SELECT * FROM bookmark_matches WHERE xeid=%s", (xeid,))
 			matches = cur.fetchone()
+			session["match"] = matches[1]
 			match = matches[5]
 			matchteams = match
 			
 			match = match.lower()
 			prev_match = match
+			mm = match
 			match_check = match.split("-")
 			if "city" in match_check[0]:
 				match = match.replace("city", "")
@@ -678,11 +743,36 @@ def getBookMarkets(match):
 				match = match.replace("hotspur", "")
 			if "lfc" in match:
 				match = match.replace("lfc", "")
+			if "paris saint germain" in match:
+				match = match.replace("paris saint germain", "psg")
 			
+			
+		
 			#print(match)
-			
 			prev_match = prev_match.split("-")
 			match_bd = prev_match
+			hb = "%"+prev_match[0]+"%"
+			ab = "%"+prev_match[1]+"%"
+			home_prev = prev_match[0][0:3]
+			home_prev = "%"+home_prev+"%"
+			away_prev = prev_match[1][1:4]
+			away_prev = "%"+away_prev+"%"
+			home_match = match.split("-")[0][0:3]
+			away_match = match.split("-")[1][1:4]
+			hm = "%"+match.split("-")[0]+"%"
+			am = "%"+match.split("-")[1]+"%"
+			if " " in hm:
+				hm = hm.replace(" ", "")
+			if " " in am:
+				am = am.replace(" ", "")
+			if "psg" in hm:
+				hm = hm.replace("psg", "paris")
+			if "psg" in am:
+				am = am.replace("psg", "paris")
+			
+			#print("select * from bookmark matches where home_team like "+home_match+" or home_team like "+hm+" or home_team like "+home_prev+"")
+			home_match = "%"+home_match+"%"
+			away_match = "%"+away_match+"%"
 			prev_match_t = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][0:2]+"%"
 			prev_match = "%"+prev_match[0].replace(" ", "")+"-"+prev_match[-1][1:3]+"%"
 			prev_match_d = prev_match.replace("-", " - ")
@@ -698,6 +788,11 @@ def getBookMarkets(match):
 			match_bb = match_bb[1]
 			match_b = "%"+match_bd[0][-4:-1] +" - " + match_bb +"%"
 			match_bb = match_b.replace(" - ", "-")
+			try:
+				prev_match_t = prev_match_t.replace(" ", "")
+			except:
+				pass
+			
 			matchl = match_d[1].split(" ")
 			match_t = "%"+match_d[0] + " - "+ matchl[1]+"%"
 			match_d = match_t.replace(" ", "")
@@ -712,8 +807,11 @@ def getBookMarkets(match):
 			best_draw = None
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
+			cur.execute("select * from bookmark_matches where home_team like %s and away_team like %s or home_team like %s and away_team like %s or home_team like %s and away_team like %s or home_team like %s and away_team like %s",(home_prev,away_prev,home_match,away_match,hb,ab,hm,am,))
+			#cur.execute("SELECT * FROM bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or home_team like %s or home_team like %s and away_team like %s or away_team like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb,home_prev,home_match,away_prev,away_match, ))
 			markets = cur.fetchall()
+			cur.execute("select * from bookmark_matches where match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
+			marketss = cur.fetchall()
 			cur.execute("SELECT * FROM bookmakers WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams,match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b,match_bb, ))
 			other_markets = cur.fetchall()
 			cur.execute("select max(cast(home_odd as decimal(10,2))), max(cast(draw_odd as decimal(10,2))), max(cast(away_odd as decimal(10,2))) from bookmark_matches WHERE match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s or match_teams like %s", (match, match_teams, match_d,match_t,prev_match,prev_match_d,prev_match_t,match_b, match_bb,))
@@ -745,15 +843,19 @@ def getBookMarkets(match):
 				r = [mk[3],mk[4],mk[5]]
 				if r not in market_odds:
 					market_odds.append(r)
+			for mk in marketss:
+				if mk not in markets:
+					markets.append(mk)
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
-	
+		
 		if session.get("user") is not None:
 			n = len(market_odds[0:5])
-			ck = Combine(market_odds, session["user"])			
+			ck = Combine(market_odds, session["user"])	
+			session["obj"] = ck			
 			combinations = ck.get_list("~")
 			combinations_p = ck.get_list("%")
 			combinations_above = ck.get_list(">~")

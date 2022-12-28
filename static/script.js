@@ -13,6 +13,7 @@ $(document).ready(function(){
 		  
 	    });
 	
+	
 	if(location.search == "?login"){
 		var y = document.getElementById("form-l");
 		console.log(y)

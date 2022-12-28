@@ -6,8 +6,12 @@
 
     <meta name="description" content="">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
 <script src="https://kit.fontawesome.com/c63faa1f51.js" crossorigin="anonymous"></script>
 <title>{{matchteams.replace("-", "vs")}}</title>
+
+	
+
 <style src=""></style>
 <style>
 body{
@@ -173,7 +177,7 @@ body{
 </head>
 <body>
 <div class="t-ody">
-<h2 style="position: absolute;left: 2%;color: yellow;">SureBet</h2>
+<h2 style="position: absolute;left: 2%;color: yellow;" onclick="location.href='{{url_for('home')}}'">SureBet</h2>
 
 
 <div class="dropdown">
@@ -249,7 +253,7 @@ body{
 		</tr>
 		{%if n != 0%}
 			{%for market in markets%}
-			{%if [market[6], market[7], market[8]] in market_odds[0:5]%}
+			
 				<tr>
 				{%set mkt=market[12].split("-")%}
 				<td class="mkt">{{mkt[0]}}</td>
@@ -270,10 +274,11 @@ body{
 				
 				</td>
 				</tr>
-			{%endif%}
+			
 			{%endfor%}
+			<!-----------
 			{%for market in other_markets%}
-			{%if [market[3], market[4],market[5]] in market_odds[0:5]%}
+			
 				<tr>
 				{%set mkt=market[2]%}
 				<td class="mkt">{{mkt}}</td>
@@ -293,8 +298,9 @@ body{
 				
 				</td>
 				</tr>
-			{%endif%}
+			
 			{%endfor%}
+			------->
 
 		{%else%}
 			
