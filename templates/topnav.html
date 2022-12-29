@@ -6,34 +6,13 @@
 Popular Leagues
 <div class="league-item">
 <h4>Football</h4>
-<a class="league-url" href="/?league=cup-of-nations">
-<img src="{{url_for('static', filename='caf.webp')}}"></img>
-<span class="league-title">Cup of Nations</span>
+{%for league in leagues%}
+<a class="league-url" href="/?league={{league[4]}}">
+{%set lurl = league[3]%}
+<img src="{{url_for('static', filename=lurl)}}"></img>
+<span class="league-title">{{league[1]}}</span>
 </a>
-<a class="league-url" href="/?league=euro">
-<img src="{{url_for('static', filename='euro.webp')}}"></img>
-<span class="league-title">Euro</span>
-</a>
-<a class="league-url" href="/?league=champions-league">
-<img src="{{url_for('static', filename='cp.webp')}}"></img>
-<span class="league-title">Champions League</span>
-</a>
-<a class="league-url" href="/?league=europa-league">
-<img src="{{url_for('static', filename='europa.webp')}}"></img>
-<span class="league-title">Europa League</span>
-</a>
-<a class="league-url" href="/?league=premier-league">
-<img src="{{url_for('static', filename='premier.webp')}}"></img>
-<span class="league-title">Premier League</span>
-</a>
-<a class="league-url" href="/?league=bundesliga">
-<img src="{{url_for('static', filename='bundesliga.webp')}}"></img>
-<span class="league-title">Bundesliga</span>
-</a>
-<a class="league-url" href="/?league=primera-division">
-<img src="{{url_for('static', filename='primera.webp')}}"></img>
-<span class="league-title">Primera Division</span>
-</a>
+{%endfor%}
 </div>
 </div>
 
@@ -42,15 +21,10 @@ Popular Leagues
 <div class="leagues">
 Bookmakers
 <div class="league-item">
-<a class="league-url" onclick="toBookmark(this.title)" title="paripesa.ng"><span class="league-title">Paripesa</span></a>
-<a class="league-url" onclick="toBookmark(this.title)"  title="betbonanza.com"><span class="league-title">BetBonanza</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="sportybet.com"><span class="league-title">SportyBet</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="suprabets.com"><span class="league-title">SupraBets</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="dafabet.com"><span class="league-title">Dafabet</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="unibet.com"><span class="league-title">Unibet</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="betsafe.com"><span class="league-title">BetSafe</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="betking.com"><span class="league-title">BetKing</span></a>
-<a class="league-url" onclick="toBookmark(this.title)" title="ixbit.com"><span class="league-title">1xBit</span></a>
+{%for book in bookmarks%}
+<a class="league-url" onclick="toBookmark(this.title)" title="{{book[3]}}"><span class="league-title">{{book[1]}}</span></a>
+{%endfor%}
+
 </div>
 </div>
 <br>

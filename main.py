@@ -275,6 +275,18 @@ def getCalc():
 
 @app.route("/topnav")
 def getNav():
+	try:
+		db = DBO()
+		cur = db.cursor(buffered=True)
+		cur.execute("select * from top_leagues where is_active=1")
+		leagues = cur.fetchall()
+		cur.execute("select * from bookmarks where is_active=1")
+		bookmarks = cur.fetchall()
+	except Exception as e:
+		print(str(e))
+		pass
+	finally:
+		db.close()
 	all_links = ['Nigeria', 'Kenya', 'Ghana', 'Gambia', 'Jamaica', 'Morocco', 'Niger', 'Mali', 'Mauritius', 'Rwanda', 'Senegal','Uganda', 'South Africa', 'Zambia', 'Zimbabwe']
 	return render_template("topnav.html", **locals())
 
@@ -893,4 +905,4 @@ def getCombination():
 		return render_template("combinations_p.html")
 
 if __name__ == "__main__":
-	app.run(host="0.0.0.0", debug=True)
+	app.run(host="0.0.0.0", port=8080, debug=True)
