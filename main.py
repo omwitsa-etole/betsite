@@ -38,7 +38,7 @@ def DBO():
 			db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
 			     user="askabcry_root",         # your username
 			     passwd="tryhackmeanddie",  # your password
-			     db="askabcry_betting")
+			     db="askabcry_bets")
 			break
 		except Exception as e:
 			print(str(e))
