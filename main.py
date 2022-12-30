@@ -33,7 +33,7 @@ def DBO():
 		pass
 		
 	
-	while True:
+	for i in range(1,7):
 		try:
 			db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
 			     user="askabcry_root",         # your username
