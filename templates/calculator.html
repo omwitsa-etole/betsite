@@ -298,30 +298,35 @@ var Calculator = {
 <script>
 $(document).ready(function(){
 	
-	setTimeout(getVal, 500);
+	setTimeout(getVal, 700);
 	
 	
 })
 function getVal(){
-	var xs = document.getElementsByTagName("input");
-	let ls = []
-	for(let i=0;i<xs.length;i++){
-		if(xs[i].classList.contains("w-number") && xs[i].classList.contains("koefficient") ){
-			ls.push(xs[i]);
+	try {
+		var xs = document.getElementsByTagName("input");
+		let ls = []
+		for(let i=0;i<xs.length;i++){
+			if(xs[i].classList.contains("w-number") && xs[i].classList.contains("koefficient") ){
+				ls.push(xs[i]);
+			}
 		}
+		var y = ls[1];
+		var x = ls[2];
+		var z = ls[3];
+		//y.click();
+		y.value = "{{odds[0][0]}}";
+		//x.click();
+		x.value = "{{odds[0][1]}}";
+		//z.click();
+		z.value = "{{odds[0][2]}}";
+		var s = document.getElementById("back_lay");
+		s.click()
+		//s.value = "5";
+	}catch(err){
+		alert("There seems to be a slight problem, refresh page : )");
+		location.reload();	
 	}
-	var y = ls[1];
-	var x = ls[2];
-	var z = ls[3];
-	//y.click();
-	y.value = "{{odds[0][0]}}";
-	//x.click();
-	x.value = "{{odds[0][1]}}";
-	//z.click();
-	z.value = "{{odds[0][2]}}";
-	var s = document.getElementById("back_lay");
-	s.click()
-	//s.value = "5";
 	
 }
 </script>
