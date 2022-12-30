@@ -80,6 +80,8 @@ class Combine:
 			db.close()
 		self.max_percent = 0
 		self.max_odds = []
+		self.min_odds = []
+		self.min_percent = 1000
 		self.markets = markets
 		self.cnt = 0
 		self.getCombinations(markets[0:6])
@@ -129,6 +131,9 @@ class Combine:
 						self.add_list(res, "~")
 						self.add_list(per, "%")
 					else:
+						if val*100 <= self.min_percent:
+							self.min_percent = val*100
+							self.min_odds = m
 						per = [m, val*100]
 						res = [m, float(val)]
 						self.add_list(res, ">~")
@@ -162,6 +167,8 @@ class Combine:
 			return self.combination_above_p
 	def get_max(self):
 		return [self.max_odds,self.max_percent]
+	def get_min(self):
+		return [self.min_odds,self.min_percent]	
 	def add_database(self, res):
 		try:
 			db = DBO()
@@ -252,6 +259,7 @@ def home():
 @app.route("/calculator")
 def getCalc():
 	match = request.args.get("match")
+	cal = request.args.get("cal")
 	if match == None:
 		return """
 			<div class="t-ody" style="position: relative;background: black;height: 60px;">
@@ -262,6 +270,10 @@ def getCalc():
 				</div><br><center>Select A <a href='/'>match</a> to perfom calculations</center>
 				"""
 	if session.get("user") != None:
+		if cal != None:
+			odds = session["odds1"]
+		else:
+			odds = session["odds"]
 		return render_template("calculator.html", **locals())
 	else:
 		return """
@@ -722,6 +734,7 @@ def gethomeMatch(match):
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
 			session["odds"] = max_percent
+			session["odds1"] = ck.get_min()
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("homematch.html", **locals())
@@ -891,6 +904,7 @@ def getBookMarkets(match):
 				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
 			max_percent = ck.get_max()
 			session["odds"] = max_percent
+			session["odds1"] = ck.get_min()
 			lcm = len(combinations)
 			lmm = len(combinations_above)
 		return render_template("bookmatch.html", **locals())

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="rs fw" >
+<title>Surebet - Calculator</title>
   <head>
 	<link rel="stylesheet" href="{{url_for('static', filename='application.css')}}">
 	<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
@@ -19,7 +20,7 @@
     }
 </script>
 
-
+  <script src="{{url_for('static',filename='jquery.js')}}"></script>
   <script src="{{url_for('static', filename='application.js')}}" id="main-script" async="async"></script>
 <style>
 .dropdown {
@@ -57,6 +58,17 @@
 .dropdown-content a:hover {background-color: #ddd;}
 
 .dropdown:hover .dropdown-content {display: block;}
+.btn{
+	position: fixed;
+	bottom: 3%;
+	left: 2%;
+	
+
+}
+.btn button{
+	padding: 9px 12px;
+	cursor: pointer;
+}
 </style>
   
 </head>
@@ -99,7 +111,7 @@ var Calculator = {
 </script>
 <main class="tool" style="margin-top: 70px;">
   <div class="d-flex">
-    <h1 class="title">Online surebet calculator   | Odds {{session["obj"][1]}}</h1>
+    <h1 class="title">Online surebet calculator   | Odds <button>{{odds[0][0]}}</button><button>{{odds[0][1]}}</button><button>{{odds[0][2]}}</button> Percent: {{"%.2f"|format(odds[1])}}</h1>
     <div style="" class="profit-container">
       <span class="profit_percent" title="Profit"></span>
     </div>
@@ -112,15 +124,14 @@ var Calculator = {
       <div class="formula_info">
   <i>
     <label for="prongs_amount">Surebet outcome number:</label>
-    <select class="prongs_amount form-control inline-input w-auto" id="prongs_amount">
-	<option value="2">2</option>
+    <select class="prongs_amount form-control inline-input w-auto" id="prongs_amount" onchange="getVal()">
       <option selected="selected" value="3">3</option>
-      <option value="4">4 or more</option>
+    
     </select>
     </i>
   <i>
     <label for="fork_type">Surebet type (formula):</label>
-    <select class="fork_type form-control inline-input w-auto" id="fork_type">
+    <select class="fork_type form-control inline-input w-auto" id="fork_type" >
     </select>
   </i>
 </div>
@@ -145,7 +156,7 @@ var Calculator = {
     <span class="koefficient_descr" title=""></span>
   </td>
   <td class="coeff_c">
-    <input class="koefficient form-control inline-input w-number" value="{{session['match']}}" type="text">
+    <input class="koefficient form-control inline-input w-number"  type="text">
     <span class="minorb">Lay odds</span>
   </td>
   <td class="comission_c">
@@ -280,8 +291,38 @@ var Calculator = {
     <label for="roundSmart">Take the currency exchange rates into account when rounding</label>
   </div>
 </main>
+<div class="btn"><button onclick="window.close()">Back</button></div>
 </body>
 
 
-
+<script>
+$(document).ready(function(){
+	
+	setTimeout(getVal, 500);
+	
+	
+})
+function getVal(){
+	var xs = document.getElementsByTagName("input");
+	let ls = []
+	for(let i=0;i<xs.length;i++){
+		if(xs[i].classList.contains("w-number") && xs[i].classList.contains("koefficient") ){
+			ls.push(xs[i]);
+		}
+	}
+	var y = ls[1];
+	var x = ls[2];
+	var z = ls[3];
+	//y.click();
+	y.value = "{{odds[0][0]}}";
+	//x.click();
+	x.value = "{{odds[0][1]}}";
+	//z.click();
+	z.value = "{{odds[0][2]}}";
+	var s = document.getElementById("back_lay");
+	s.click()
+	//s.value = "5";
+	
+}
+</script>
 </html>

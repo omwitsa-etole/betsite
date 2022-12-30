@@ -107,9 +107,11 @@ Countries
 {%if session.get("odds") != None%}
 {%if session.get("odds")[1] != 0%}
 <p>Odds <span class="b-odds"><button>{{session["odds"][0][1]}}<button></span><span class="b-odds"><button>{{session["odds"][0][2]}}</button></span><span class="b-odds"><button>{{session["odds"][0][2]}}</button></span><br>
-<p>Go to Calculator <a href="{{url_for('getCalc')}}?match={{session['match']}}">Calculator</a></p>
+<p>Go to Calculator <a href="{{url_for('getCalc')}}?match={{session['match']}}" target="_blank">Calculator</a></p>
 {%else%}
 <p>All combination results were over 1, no suitable odds found,try another match</p>
+<p>proceed with odds (minimum percent odds) <br><button>{{session["odds1"][0][0]}}</button><button>{{session["odds1"][0][1]}}</button><button>{{session["odds1"][0][2]}}</button></p>
+<p><a href="{{url_for('getCalc')}}?match={{session['match']}}&&cal=min-odds" target="_blank">calculator</a></p>
 {%endif%}
 {%else%}
 <p>Login to perfom calculations</p>
