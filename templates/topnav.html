@@ -106,7 +106,7 @@ Countries
 {%if session.get("match") != None%}
 {%if session.get("odds") != None%}
 {%if session.get("odds")[1] != 0%}
-<p>Odds <span class="b-odds"><button>{{session["odds"][0][1]}}<button></span><span class="b-odds"><button>{{session["odds"][0][2]}}</button></span><span class="b-odds"><button>{{session["odds"][0][2]}}</button></span><br>
+<p>Odds <br><button>{{session["odds"][0][0]}}</button><button>{{session["odds"][0][1]}}</button><button>{{session["odds"][0][2]}}</button></p><br>
 <p>Go to Calculator <a href="{{url_for('getCalc')}}?match={{session['match']}}" target="_blank">Calculator</a></p>
 {%else%}
 <p>All combination results were over 1, no suitable odds found,try another match</p>
