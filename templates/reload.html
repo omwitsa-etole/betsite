@@ -1,0 +1,36 @@
+<!Doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="{{url_for('static', filename='jquery.js')}}"></script>
+<style>
+.loader{
+	
+	margin-top: 15%;
+	width: 70%;
+	height: 70%;
+}
+</style>
+</head>
+
+<body>
+<form method="POST" id="my-form" action="{{url_for('refresh')}}"></form>
+<center>{%if msg%}<h6>{{msg}}</h6>{%endif%}
+<div class="loader">
+<video autoplay  loop>
+<source src="{{url_for('static',filename='loader.mp4')}}" type="video/mp4">
+</video>
+</div></center>
+</body>
+<script>
+function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
+$(document).ready(function(){
+	sleep(3000).then(() => {
+		$("#my-form").submit();
+	})
+	
+})
+</script>
+</html>

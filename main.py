@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = 'app@Betting'
 
 is_prod = os.getenv('IS_HEROKU')
+complete = 0
 print(is_prod)
 
 
@@ -61,16 +62,34 @@ def calc(a, b, c):
 
 
 class Combine:
-	def __init__(self, markets, user):
+	def __init__(self, markets, book_list,user):
 		self.user  = user
 		self.combination = []
 		self.combination_p= []
 		self.combination_above = []
 		self.combination_above_p = []
+		self.book_list = book_list
+		
+		self.min_odds = []
+		self.min_percent = 1000
+		self.markets = markets
+		self.cnt = 0
+		
+		self.getCombinations(markets[0:6])
+		
+		if len(self.max_odds) > 0:
+			
+			self.add_database([self.max_percent,self.max_odds], "one")
+		else:
+			self.add_database([self.max_percent,[0,0,0]], "")
+
+	def add_database(self,vals,m):
+		
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("delete from user_combination where user=%s", (self.user,))
+			cur.execute("insert into user_combination(user,odd_one,odd_two,odd_three,result) values(%s,%s,%s,%s,%s)", (self.user,str(vals[1][0]),str(vals[1][1]),str(vals[1][2]),str(vals[0]),))
+			
 		except Exception as e:
 			db.rollback()
 			print(str(e))
@@ -78,17 +97,33 @@ class Combine:
 		finally:
 			db.commit()
 			db.close()
-		self.max_percent = 0
-		self.max_odds = []
-		self.min_odds = []
-		self.min_percent = 1000
-		self.markets = markets
-		self.cnt = 0
-		self.getCombinations(markets[0:6])
+		if m == "one":
+			
+			for book_list  in self.book_list:
+				try:
+					book = book_list[3].split("-")[0]
+					
+					db = DBO()
+					cur = db.cursor(buffered=True)
+					cur.execute("update user_combination set book_one = %s where odd_one=%s ", (book, book_list[0],))
+					if not db:
+						db = DBO()
+					cur.execute("update user_combination set book_two = %s where odd_two=%s", (book, book_list[1],))
+					if not db:
+						db = DBO()
+					cur.execute("update user_combination set book_three = %s where odd_three=%s", (book, book_list[2],))
+				except Exception as e:
+					db.rollback()
+					print(str(e))
+					pass
+				finally:
+					db.commit()
+					db.close()
 		
 	def getCombinations(self,ms):
 		count = 0
-
+		self.max_percent = 0
+		self.max_odds = []
 		ls = ms
 		l = ls
 		cn = getPower(len(l))
@@ -121,24 +156,14 @@ class Combine:
 					c = z
 					val = calc(float(a),float(b),float(c))
 					
-					if val < 1:
+					if val <= 1:
 						
-						if val*100 > self.max_percent:
-							self.max_percent = val*100
-							self.max_odds = m
-						per = [m, val*100]
-						res = [m, float(val)]
-						self.add_list(res, "~")
-						self.add_list(per, "%")
-					else:
-						if val*100 <= self.min_percent:
-							self.min_percent = val*100
-							self.min_odds = m
-						per = [m, val*100]
-						res = [m, float(val)]
-						self.add_list(res, ">~")
-						self.add_list(per, ">%")
-					self.cnt = self.cnt + 1
+						if val*100 <= 100:
+							if 100-(val*100) >= self.max_percent:
+								self.max_percent = 100-(val*100)
+								self.max_odds = m
+					
+					
 				except Exception as e:
 					print(str(e))
 					pass
@@ -156,32 +181,12 @@ class Combine:
 		if md == ">%":
 			if res not in self.combination_above_p:
 				self.combination_above_p.append(res)
-	def get_list(self,md):
-		if md == "~":
-			return self.combination
-		if md == "%":
-			return self.combination_p
-		if md == ">~":
-			return self.combination_above
-		if md == ">%":
-			return self.combination_above_p
+	
 	def get_max(self):
 		return [self.max_odds,self.max_percent]
 	def get_min(self):
 		return [self.min_odds,self.min_percent]	
-	def add_database(self, res):
-		try:
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("insert into user_combination(user, odd_one, odd_two, odd_three, result) values(%s,%s,%s,%s,%s) ", (self.user, res[0][0],res[0][1], res[0][2],res[1], ))
-			
-		except Exception as e:
-			db.rollback();print(str(e))
-			pass
-		finally:
-			db.commit()
-			db.close()
-
+	
 @app.route("/request/<mode>", methods=['POST'])
 def apiRequest(mode):
 	if mode == "login":
@@ -204,20 +209,114 @@ def logout():
 	session.clear()
 	return redirect("/")
 
+def get_list(user):
+	try:
+		db = DBO()
+		cur = db.cursor(buffered=True)
+		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three from user_combination where user=%s",(user,))
+		odds = cur.fetchall()
+		return odds
+	except Exception as e:
+		db.rollback()
+		print(str(e))
+		pass
+	finally:
+		db.close()
+
+def best_today():
+	pass
+def get_odds():
+	try:
+		db = DBO()
+		cur = db.cursor(buffered=True)
+		cur.execute("select home_odd,draw_odd,away_odd,result,home_odd,draw_odd,away_odd from home_matches")
+		odds = cur.fetchall()
+		return odds
+	except Exception as e:
+		db.rollback()
+		print(str(e))
+		pass
+	finally:
+		db.close()
+
+def workMatch():
+	pass
+
 @app.route("/", methods=['GET'])
 def home():
 	#print(session.get("user"))
 	#"""
 	country = 'home'
+	match_list = []
 	league = request.args.get("league")
 	count = request.args.get("filter")
+	refresh = request.args.get("reload")
+	if refresh != None and session.get("user") != None:
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("delete from user_combination where user=%s", (session["user"],))
+		except Exception as e:
+			db.rollback()
+			print(str(e))
+			pass
+		finally:
+			db.commit()
+			db.close()
+		return redirect("/")
+			
 	if count != None:
 		country = count
 	time_filter = request.args.get("time")
-	print(time_filter)
-
+	try:
+		db = DBO()
+		cur = db.cursor(buffered=True)
+		cur.execute("select match_teams from home_matches")
+		matchs = cur.fetchall()
+		if session.get("user") == None:
+			cur.execute("select count(id) from user_combination where user=%s",("None",))
+		else:
+			cur.execute("select count(id) from user_combination where user=%s",(session["user"],))
+		count = cur.fetchone()[0]
+		#print(count)
+		if count == 0 or count == '0':
+			lis = MatchData(matchs)
+			match_list = lis.get_data()
+			book_list = lis.get_books()
+		
+		
+	except Exception as e:
+		print(str(e))
+		pass
+	finally:
+		db.close()	
+	
+	if len(match_list) > 0 and session.get("user") != None:
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("delete from user_combination where user=%s", (session["user"],))
+		except Exception as e:
+			db.rollback()
+			print(str(e))
+			pass
+		finally:
+			db.commit()
+			db.close()
+		for mat in match_list:
+			n = match_list.index(mat)
+			if mat[0] != 0:
+				ck = Combine(mat,book_list[n],session["user"])
+		
+	if session.get("user") != None:
+		combinations = get_list(session["user"])
+		#best_today = best_today(session["user"])
+	else:
+		combinations = get_odds()
+	
 	db = DBO()
 	cur = db.cursor(buffered=True)
+
 	if league != None and country != None and time_filter == None:
 		ll = "%"+league+"%"
 		
@@ -356,24 +455,7 @@ def getMatch(match):
 
 
 	return render_template("match.html", **locals())
-@app.route("/markets/<mat>")
-def getMarkets(mat):
-	print(mat)
-	if mat:
-		try:
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM matches WHERE xeid=%s", (mat,))
-			matches = cur.fetchone()
-			cur.execute("SELECT * FROM bookmakers WHERE xeid=%s", (mat,))
-			markets = cur.fetchall()
-			n = len(markets)
-		except Exception as e:
-			db.rollback();print(str(e))
-			pass
-		finally:
-			db.close()
-		return render_template("markets.html", **locals())
+
 
 @app.route("/bookmaker/<book>")
 def getBookmaker(book):
@@ -535,7 +617,7 @@ def search():
 					home_matches = cur.fetchall()
 					cur.execute("SELECT * FROM bookmark_matches WHERE bookmark=%s or bookmark like %s and match_teams like %s or league like %s", (old_book,bk, query, query, ))
 					matches = cur.fetchall()
-					print("here")
+					
 				except Exception as e:
 					db.rollback();print(str(e))
 					pass
@@ -694,50 +776,126 @@ def gethomeMatch(match):
 				best_home = max(float(match_odds[0]), float(book_odds[0]))
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
-			#print(best_away)
-			for mk in markets:
-				r = [mk[6], mk[7],mk[8]]
-				if r not in market_odds:
-					market_odds.append(r)
-			for mk in other_markets:
-				r = [mk[3],mk[4],mk[5]]
-				if r not in market_odds:
-					market_odds.append(r)
-			for mk in marketss:
-				if mk not in markets:
-					markets.append(mk)
+			
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
 		
-		if session.get("user") is not None:
-			n = len(market_odds[0:5])
-			ck = Combine(market_odds, session["user"])		
-				
-			combinations = ck.get_list("~")
-			combinations_p = ck.get_list("%")
-			combinations_above = ck.get_list(">~")
-			combinations_above_p = ck.get_list(">%")
-			cm = ""
-			for combination in combinations:
-				cm = cm+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			cm_p = ""
-			for combination in combinations_p:
-				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			cma = ""
-			for combination in combinations_above:
-				cma = cma+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			cma_p = ""
-			for combination in combinations_above_p:
-				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			max_percent = ck.get_max()
-			session["odds"] = max_percent
-			session["odds1"] = ck.get_min()
-			lcm = len(combinations)
-			lmm = len(combinations_above)
+		
 		return render_template("homematch.html", **locals())
+
+class MatchData:
+	def __init__(self,matchs):
+		self.user = session["user"]
+		self.matches = matchs
+		self.market_odds = []
+		self.book_list = []
+		for match in self.matches:
+			self.reloadOne(match[0])
+			
+	def get_books(self):
+		return self.book_list
+	def get_data(self):
+		return self.market_odds
+	def Checkmatch(self,match):
+		if "city" in match:
+				match = match.replace("city", "")
+		if "wolverhampton" in match:
+			match = match.replace("wolverhampton", "wolves")
+		if "utd" in match:
+			match = match.replace("utd", "united")
+		if "wanderers" in match:
+			match = match.replace("wanderers", "")
+		if "hotspur" in match:
+			match = match.replace("hotspur", "")
+		if "lfc" in match:
+			match = match.replace("lfc", "")
+		if "psg" in match:
+			match = match.replace("psg", "paris ")
+		return match
+
+	def reloadOne(self,match):
+		
+		try:
+			prevmatch = match.split("-")
+			match = self.Checkmatch(match)
+			match = match.split("-")
+			home = prevmatch[0][0:4]
+			away= prevmatch[-1][0:4]
+			home_team = match[0][0:4]
+			away_team = match[-1][0:4]
+			home = "%"+home+"%"
+			away = "%"+away+"%"
+			home_team = "%"+home_team+"%"
+			away_team = "%"+away_team+"%"
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("SELECT home_odd,draw_odd,away_odd FROM bookmark_matches where home_team like %s and away_team like %s or home_team like %s and away_team like %s",(home,away,home_team,away_team,))
+				markets = cur.fetchall()
+				cur.execute("SELECT home_odd,draw_odd,away_odd,bookmark FROM bookmark_matches where home_team like %s and away_team like %s or home_team like %s and away_team like %s",(home,away,home_team,away_team,))
+				bookmarks = cur.fetchall()
+				if markets:
+					self.market_odds.append(markets)
+					self.book_list.append(bookmarks)
+				else:
+					self.market_odds.append([0,0,0])
+				
+			except Exception as e:
+				db.rollback();print(str(e))
+				pass
+			finally:
+				db.close()
+		except Exception as e:
+			print(str(e))
+			pass
+		
+	
+
+@app.route("/bookmaker/reload",methods=['GET','POST'])
+def refresh():
+	global complete 
+	if request.method == "POST" and complete == 0:
+		complete = 1
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM home_matches")
+			matches = cur.fetchall()
+			match = MatchData(matches)
+			ck = Combine(market_odds, session["user"])	
+			combinations = ck.get_list()	
+			#for match in matches:
+				
+			n = len(markets)
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.close()
+		msg = "Refresh Completed"
+	return render_template("reload.html",**locals())
+
+@app.route("/markets")
+def getMarkets():
+	
+	if mat:
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			cur.execute("SELECT * FROM matches WHERE xeid=%s", (mat,))
+			matches = cur.fetchone()
+			cur.execute("SELECT * FROM bookmakers WHERE xeid=%s", (mat,))
+			markets = cur.fetchall()
+			n = len(markets)
+		except Exception as e:
+			db.rollback();print(str(e))
+			pass
+		finally:
+			db.close()
+		return render_template("markets.html", **locals())
 
 @app.route("/bookmaker/match/<match>")
 def getBookMarkets(match):
@@ -865,48 +1023,14 @@ def getBookMarkets(match):
 				best_draw = max(float(match_odds[1]), float(book_odds[1]))
 				best_away = max(float(match_odds[2]), float(book_odds[2]))
 			#print(best_away)
-			for mk in markets:
-				r = [mk[6], mk[7],mk[8]]
-				if r not in market_odds:
-					market_odds.append(r)
-			for mk in other_markets:
-				r = [mk[3],mk[4],mk[5]]
-				if r not in market_odds:
-					market_odds.append(r)
-			for mk in marketss:
-				if mk not in markets:
-					markets.append(mk)
+		
 		except Exception as e:
 			db.rollback();print(str(e))
 			pass
 		finally:
 			db.close()
 		
-		if session.get("user") is not None:
-			n = len(market_odds[0:5])
-			ck = Combine(market_odds, session["user"])	
-					
-			combinations = ck.get_list("~")
-			combinations_p = ck.get_list("%")
-			combinations_above = ck.get_list(">~")
-			combinations_above_p = ck.get_list(">%")
-			cm = ""
-			for combination in combinations:
-				cm = cm+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			cm_p = ""
-			for combination in combinations_p:
-				cm_p = cm_p + "<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			cma = ""
-			for combination in combinations_above:
-				cma = cma+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			cma_p = ""
-			for combination in combinations_above_p:
-				cma_p = cma_p+"<div class='bets'><button>"+str(combination[0][0])+"</button><button>"+str(combination[0][1])+"</button><button>"+str(combination[0][2])+"</button><div class='res'>"+"{:.2f}".format(combination[1])+"</div></div>"
-			max_percent = ck.get_max()
-			session["odds"] = max_percent
-			session["odds1"] = ck.get_min()
-			lcm = len(combinations)
-			lmm = len(combinations_above)
+		
 		return render_template("bookmatch.html", **locals())
 
 @app.route("/user/combination")

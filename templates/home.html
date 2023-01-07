@@ -103,7 +103,79 @@ cursor:pointer;
 .top-nav-b options{
 	height: 35px;
 }
-
+.odds-tab{
+	width: 30%;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	height: 300px;
+	position: relative;
+}
+.stake-tab{
+	width: 30%;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	height: 300px;
+	position: absolute;
+	left: 30%;
+	margin-left: 5%;
+	top: 0;
+}
+.results-tab{
+	width: 30%;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	height: 300px;
+	position: absolute;
+	left: 70%;
+	
+	top: 0;
+}
+.stake-tab div{
+	display: block;
+	margin-bottom: 10px;
+}
+.results-tab div{
+	display: block;
+	margin-bottom: 10px;
+}
+.odds-tab div{
+	display: block;
+	margin-bottom: 10px;
+}
+.match-odd{
+	height: 25%;
+	width: 100%;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+	text-align: center;
+	cursor: pointer;
+	overflow: hidden;
+	position: relative;
+}
+.result-return{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 60px;
+	width: 100%;
+	text-align: center;
+	z-index: 1;
+	color: white;
+	background: blue;
+}
+.result-return span{
+	display: inline;
+	width: 40%;
+	height: 80%;
+}
+.form-group{
+	width: 100%;
+	text-align: center;
+}
+.form-group input{
+	width: 35%;
+	padding: 9px;
+	border-radius: 11px;
+	display: inline;
+	margin-right: 10px;
+}
 </style>
 <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 <script src="{{url_for('static', filename='jquery.js')}}"></script>
@@ -139,60 +211,123 @@ cursor:pointer;
 </div>
 <div class="main-body">
 {%for match in matches%}
-		{%if match[3] == '0:00:00'%}
+		{%set odds= matches.index(match)%}
+		{%if combinations[odds][3] == 0 or combinations[odds][3] == '0'%}		
 		{%else%}
-		{%set m = match[5].split(" - ")%}
-		{%set home_team = match[17]%}
-		{%set away_team = match[18]%}
-		{%if home_team == ""%}
+			{%if match[3] == '0:00:00'%}
+			{%else%}
+			{%set m = match[5].split(" - ")%}
+			{%set home_team = match[17]%}
+			{%set away_team = match[18]%}
+			{%if home_team == ""%}
+				
+				{%set home_team = m[0]%}
+			{%endif%}
+			{%if match[18] == ""%}
+				{%set away_team = m[1]%}
+			{%endif%}
+			{%set m_date = match[2]%}
+			<div class="match-box">
+			<div class="match-l">
+			<a style="display:none;">League: {{match[0]}}</a>
+			<a>Time: {{match[3]}} </a>
+			<div style="margin-left: 5%;"  onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'">
+			<p>{{home_team}}</p>
+			<p>{{away_team}}</p>
+			</div>
+			<div style="position: absolute;bottom: 1%;">  <a>Date: {{m_date}}</a></div>
+			</div>
+			<div class="match-r">
+			{%if combinations[odds][0] != combinations[odds][4]%}
+				<div class="matchodd">
+				1
+				<p>{{combinations[odds][0]}}</p>
+				<div class="odd-mkt">{{combinations[odds][4]}}</div>
+				</div>
+				<div class="matchodd">
+				x
+				<p>{{combinations[odds][1]}}</p>
+				<div class="odd-mkt">{{combinations[odds][5]}}</div>
+				</div>
+				<div class="matchodd">
+				2
+				<p>{{combinations[odds][2]}}</p>
+				<div class="odd-mkt">{{combinations[odds][6]}}</div>
+				</div>
+			{%else%}
+			<div style="height: 90%;box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;margin-top: 1.5%;text-align: center;width: 80%;">Login To View Odds</div>
+			{%endif%}
+			</div>
+			<div class="go-calc">
 			
-			{%set home_team = m[0]%}
-		{%endif%}
-		{%if match[18] == ""%}
-			{%set away_team = m[1]%}
-		{%endif%}
-		{%set m_date = match[2]%}
-		<div class="match-box">
-		<div class="match-l">
-		<a>League: {{match[0]}}</a>
-		<div style="margin-left: 5%;"  onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'">
-		<p>{{home_team}}</p>
-		<p>{{away_team}}</p>
-		</div>
-		<div style="position: absolute;bottom: 1%;"><a>Time: {{match[3]}} </a>  <a>Date: {{m_date}}</a></div>
-		</div>
-		<div class="match-r">
-		<div class="matchodd">
-		1
-		<p>{{match[6]}}</p>
-		<div class="odd-mkt">{{match[13]}}</div>
-		</div>
-		<div class="matchodd">
-		x
-		<p>{{match[7]}}</p>
-		<div class="odd-mkt">{{match[14]}}</div>
-		</div>
-		<div class="matchodd">
-		2
-		<p>{{match[8]}}</p>
-		<div class="odd-mkt">{{match[15]}}</div>
-		</div>
-
-		</div>
-		</div>
+			{%set odd = combinations[odds][3]%}
+			{%set home_odd = combinations[odds][0]%}
+			{%set draw_odd = combinations[odds][1]%}
+			{%set away_odd = combinations[odds][2]%}
+			{%set home_mkt = combinations[odds][4]%}
+			{%set draw_mkt = combinations[odds][5]%}
+			{%set away_mkt = combinations[odds][6]%}
+			{%if odd == '0.1'%}
+			Percentage Profit:  login<span style="float:right;height: 100%;width: 30%;text-align: right;"><button onclick="calculateM()">calculator</button></span>
+			{%else%}
+			Percentage Profit:  {{'%.2f'|format(odd|float)}}<span style="float:right;height: 100%;width: 30%;text-align: right;"><button onclick="calculateM('{{match[5]}}','{{odd}}','{{home_odd}}','{{draw_odd}}','{{away_odd}}','{{home_mkt}}','{{draw_mkt}}','{{away_mkt}}')">calculator</button></span>
+			{%endif%}
+			</div>
+			</div>
+			{%endif%}
 		{%endif%}
 {%endfor%}
 </div>
 
 <div style="position: fixed;z-index: 200;width: 100%;height: 100%;top: 0;left: 0;display: none;" id="form-l">
 </div>
-<div class="results" style="z-index: 1;" id="mydiv">
-<div id="mydivheader">Scroll to move</div>
-<center><h4>Combinations<select style="float: right;" ><option value="~">Inverse</option><option value="%">Percentage</option></select></h4></center>
+<div class="best-results" >
+</div>
+<div class="results" id="mydiv" style="height: 550px;overflow: hidden;">
+<div id="mydivheader">Calculator<a style="float:right;cursor:pointer;" onclick="document.getElementById('mydiv').style.display='none'"><i class="fa fa-times"></i></a></div>
+<center><h4 id="r-teams"></h4></center>
 {%if session.get("user") == None%}
 <div ><center><h4>Login to view combination results</h4></center></div>
+{%else%}
+<h5>Percentage Profit: <b id="percent"></b></h5>
+<div class="form-group">
+<input type="text" placeholder="Stake" class="form-control" id="stake-input" value="100" onkeyup="calcM()"> = <input type="text" id="stake-result" disabled placeholder="Return" class="form-control" style="background: ;">
+</div><br>
+<div style="position: relative;width: 100%;height:50%;">
+<div class="odds-tab" >
+<div class="match-odd">
+<p id="home_odd"></p>
+<div  id="home_mkt" style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;"></div>
+</div>
+<div class="match-odd">
+<p id="draw_odd"></p>
+<div id="draw_mkt" style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;"></div>
+</div>
+<div class="match-odd">
+<p id="away_odd"></p>
+<div id="away_mkt" style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;"></div>
+</div>
+
+</div>
+<div class="stake-tab">
+<div class="match-odd">
+<p id="stake_home"></p>
+<div style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;">Stake</div>
+</div>
+<div class="match-odd"><p id="stake_draw"></p><div style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;">Stake</div></div>
+<div class="match-odd"><p id="stake_away"></p><div style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;">Stake</div></div>
+</div>
+<div class="results-tab">
+<div class="match-odd"><p id="result_home"></p><div style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;">Return</div></div>
+<div class="match-odd"><p id="result_draw"></p><div style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;">Return</div></div>
+<div class="match-odd"><p id="result_away"></p><div style="position: absolute;bottom: 0;left: 0;width: 100%;height: 30px;">Return</div></div>
+</div>
+</div>
+<div class="result-return"><span>Sure Profit: <b id="result-profit" style="color:black;font-size: 18px;"></b></span></div>
 {%endif%}
-<div ><center><h4>Select match to view combination results</h4></center></div>
+<div>
+
+</div>
 </div>
 </body>
 <script>
@@ -264,6 +399,99 @@ function dragElement(elmnt) {
     document.onmouseup = null;
     document.onmousemove = null;
   }
+}
+function calculateM(teams,per,home,draw,away,hm,dm,am){
+	console.log(per)
+	let percent = parseFloat(per);
+	percent = percent.toFixed(4);
+	home = parseFloat(home);
+	draw = parseFloat(draw);
+	away = parseFloat(away);
+	var x=document.getElementById("mydiv").style.display='block';
+	document.getElementById("r-teams").innerText = teams;
+	var p = document.getElementById("percent");
+	var h = document.getElementById("home_odd");
+	var d = document.getElementById("draw_odd");
+	var a = document.getElementById("away_odd");
+	var h_m = document.getElementById("home_mkt");
+	var d_m = document.getElementById("draw_mkt");
+	var a_m = document.getElementById("away_mkt");
+	p.innerText = percent;
+	document.getElementById("result-profit").innerText = percent;
+	h.innerText = home;
+	d.innerText = draw;
+	a.innerText = away;
+	h_m.innerText = hm;
+	d_m.innerText = dm;
+	a_m.innerText = am;
+	calcM();
+}
+function calcM(){
+	var stake = document.getElementById("stake-input").value;
+	var p = document.getElementById("percent").innerText;
+	p = parseFloat(p);
+	stake = parseInt(stake);
+	document.getElementById("result-profit").innerText = (stake*p)/100;
+	var profit = document.getElementById("result-profit").innerText;
+	profit = parseFloat(profit);
+	var p = document.getElementById("percent").innerText;
+	var h = document.getElementById("home_odd").innerText;
+	var d = document.getElementById("draw_odd").innerText;
+	var a = document.getElementById("away_odd").innerText;
+	var stake_h =  document.getElementById("stake_home");
+	var stake_d = document.getElementById("stake_draw");
+	var stake_a = document.getElementById("stake_away");
+	try{
+		a = parseFloat(a);
+		h = parseFloat(h);
+		d = parseFloat(d)
+	}catch(err){
+		alert(err);
+	}
+	document.getElementById("stake-result").value = stake + profit;
+	if(parseInt(stake) > 0){
+		
+		let v = document.getElementById("stake-result").value;
+		v = parseFloat(v).toFixed(4);
+		let h_d = v*((1/h)*100)/100;
+		let d_d = v*((1/d)*100)/100;
+		let a_d = v*((1/a)*100)/100;
+		stake_h.innerText = parseFloat(h_d).toFixed(4);
+		stake_d.innerText = parseFloat(d_d).toFixed(4);
+		stake_a.innerText = parseFloat(a_d).toFixed(4);
+		
+		resultsM();
+	}
+}
+function resultsM(){
+	var stake_h =  document.getElementById("stake_home").innerText;
+	var stake_d = document.getElementById("stake_draw").innerText;
+	var stake_a = document.getElementById("stake_away").innerText;
+	var h = document.getElementById("home_odd").innerText;
+	var d = document.getElementById("draw_odd").innerText;
+	var a = document.getElementById("away_odd").innerText;
+	var results_h =  document.getElementById("result_home");
+	var results_d = document.getElementById("result_draw");
+	var results_a = document.getElementById("result_away");
+	try{
+		h = parseFloat(h);
+		d = parseFloat(d);
+		a = parseFloat(a);
+		stake_h = parseFloat(stake_h);
+		stake_d = parseFloat(stake_d);
+		stake_a = parseFloat(stake_a);
+		let res_h = stake_h * h;
+		let res_d = stake_d * d;
+		let res_a = stake_a * a;
+		res_h = parseFloat(res_h).toFixed(2);
+		res_d = parseFloat(res_d).toFixed(2);
+		res_a = parseFloat(res_a).toFixed(2);
+		results_h.innerText = res_h;
+		results_d.innerText = res_d;
+		results_a.innerText = res_a;
+	}catch(err){
+		alert(err);
+	}
 }
 </script>
 </html>

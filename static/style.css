@@ -17,6 +17,9 @@
 	
 }
 .top-nav-b{
+	position:absolute;
+	left: 0;
+	
 	margin-top: 70px;
 	width: 100%;
 	height: 80px;
@@ -103,6 +106,7 @@
 	font-size: 18px;
 	padding: 10px 12px;
 	text-decoration: none;
+	color:yellow;
 }
 .bookmark{
 	position: relative;
@@ -185,14 +189,28 @@
 	background: #111;
 	color: white;
 }
-
-.results{
+.best-results{
+	
 	width: 25%;
 	position: fixed;
 	right: 1%;
-	top: 260px;
+	bottom: 1%;
 	z-index: 5;
 	height: 430px;
+	border-radius: 10px;
+	background: white;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+	color: black;
+	overflow: auto;
+}
+.results{
+	display: none;
+	width: 30%;
+	position: fixed;
+	left: 30%;
+	top: 15%;
+	z-index: 199;
+	height: 500px;
 	border-radius: 10px;
 	background: white;
 	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
@@ -444,10 +462,10 @@
 	color: white;
 }
 .drop-up{
-	position: absolute;
-	z-index: 500;
-	left: 0;
-	top: 100%;
+	position: fixed;
+	z-index: 50;
+	
+	
 	width: 250px;
 	height: 350px;
 	background: white;
@@ -528,11 +546,11 @@
 	height: auto;
 }
 .match-box{
-
+        margin-bottom: 50px;
 	width: 95%;
 	margin-left: 2.5%;
 	margin-top: 15px;
-	height: 120px;
+	min-height: 120px;
 	border-radius: 10px;
 	background: white;
 	position: relative;
@@ -572,14 +590,35 @@
 }
 .odd-mkt{
 	position: absolute;
-	bottom: 1%;
+	top: 70%;
+	overflow: hidden;
+	justify-content: center;
 	width: 95%;
 	margin-left: 2.5%;
 	left: 0;
-	height: 15%;
+	height: 30px;
 	z-index: 4;
 	box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
 }
+.go-calc{
+	position: absolute;	
+	top:100%;
+	left: 0;
+	width: 100%;
+	height:35px;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+	background: blue;
+	color:white;
+	text-align: left;
+	border-radius: 10px;
+}
+.go-calc button{
+		height:100%;
+		width: 25%px;
+		border-radius:10px;
+		cursor: pointer;
+		
+	}
 @media only screen and (max-width: 800px) {
 	.b-ody{
 		margin-left: 0;
