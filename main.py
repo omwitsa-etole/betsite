@@ -117,7 +117,7 @@ class Combine:
 					pass
 				finally:
 					db.commit()
-			db.close()
+			#db.close()
 				
 	def getCombinations(self,ms):
 		count = 0
@@ -228,7 +228,8 @@ def get_odds():
 	try:
 		db = DBO()
 		cur = db.cursor(buffered=True)
-		cur.execute("select home_odd,draw_odd,away_odd,result,home_odd,draw_odd,away_odd from home_matches")
+		#cur.execute("select home_odd,draw_odd,away_odd,result,home_odd,draw_odd,away_odd from home_matches")
+		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three from user_combination where user=%s",("korg",))
 		odds = cur.fetchall()
 		return odds
 	except Exception as e:
