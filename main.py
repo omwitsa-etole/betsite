@@ -23,16 +23,16 @@ def get_code():
 	pass
 
 def DBO():
+	"""
 	try:
 		db = mysql.connector.connect(host="localhost",    # your host, usually localhost
 		     user="root",         # your username
 		     passwd="root",  # your password
 		     db="askabcry_betting")
-		return db
 	except Exception as e:
 		print(str(e))
 		pass
-		
+	"""
 	
 	for i in range(1,7):
 		try:
