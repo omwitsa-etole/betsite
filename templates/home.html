@@ -286,9 +286,7 @@ cursor:pointer;
 <div class="results" id="mydiv" style="height: 550px;overflow: hidden;">
 <div id="mydivheader">Calculator<a style="float:right;cursor:pointer;" onclick="document.getElementById('mydiv').style.display='none'"><i class="fa fa-times"></i></a></div>
 <center><h4 id="r-teams"></h4></center>
-{%if session.get("user") == None%}
-<div ><center><h4>Login to view combination results</h4></center></div>
-{%else%}
+
 <h5>Percentage Profit: <b id="percent"></b></h5>
 <div class="form-group">
 <input type="text" placeholder="Stake" class="form-control" id="stake-input" value="100" onkeyup="calcM()"> = <input type="text" id="stake-result" disabled placeholder="Return" class="form-control" style="background: ;">
@@ -324,7 +322,6 @@ cursor:pointer;
 </div>
 </div>
 <div class="result-return"><span>Sure Profit: <b id="result-profit" style="color:black;font-size: 18px;"></b></span></div>
-{%endif%}
 <div>
 
 </div>
