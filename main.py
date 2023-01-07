@@ -98,42 +98,18 @@ class Combine:
 				db.commit()
 				db.close()
 		if m == "one":
-			
+			db = DBO()
+			cur = db.cursor(buffered=True)
 			for book_list  in self.book_list:
+				
 				try:
 					book = book_list[3].split("-")[0]
 					
-					db = DBO()
-					cur = db.cursor(buffered=True)
+					if not db:
+						db = DBO()
+						cur = db.cursor(buffered=True)
 					cur.execute("update user_combination set book_one = %s where odd_one=%s ", (book, book_list[0],))
-				except Exception as e:
-					db.rollback()
-					print(str(e))
-					pass
-				finally:
-					db.commit()
-					db.close()
-				try:
-					book = book_list[3].split("-")[0]
-					
-					db = DBO()
-					cur = db.cursor(buffered=True)
-					
 					cur.execute("update user_combination set book_two = %s where odd_two=%s", (book, book_list[1],))
-					
-				except Exception as e:
-					db.rollback()
-					print(str(e))
-					pass
-				finally:
-					db.commit()
-					db.close()
-				try:
-					book = book_list[3].split("-")[0]
-					
-					db = DBO()
-					cur = db.cursor(buffered=True)
-					
 					cur.execute("update user_combination set book_three = %s where odd_three=%s", (book, book_list[2],))
 				except Exception as e:
 					db.rollback()
@@ -141,8 +117,8 @@ class Combine:
 					pass
 				finally:
 					db.commit()
-					db.close()
-		
+			db.close()
+				
 	def getCombinations(self,ms):
 		count = 0
 		self.max_percent = 0
