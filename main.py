@@ -84,19 +84,19 @@ class Combine:
 			self.add_database([self.max_percent,[0,0,0]], "")
 
 	def add_database(self,vals,m):
-		
-		try:
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("insert into user_combination(user,odd_one,odd_two,odd_three,result) values(%s,%s,%s,%s,%s)", (self.user,str(vals[1][0]),str(vals[1][1]),str(vals[1][2]),str(vals[0]),))
-			
-		except Exception as e:
-			db.rollback()
-			print(str(e))
-			pass
-		finally:
-			db.commit()
-			db.close()
+		if m == "":
+			try:
+				db = DBO()
+				cur = db.cursor(buffered=True)
+				cur.execute("insert into user_combination(user,odd_one,odd_two,odd_three,result) values(%s,%s,%s,%s,%s)", (self.user,str(vals[1][0]),str(vals[1][1]),str(vals[1][2]),str(vals[0]),))
+				
+			except Exception as e:
+				db.rollback()
+				print(str(e))
+				pass
+			finally:
+				db.commit()
+				db.close()
 		if m == "one":
 			
 			for book_list  in self.book_list:
@@ -106,17 +106,35 @@ class Combine:
 					db = DBO()
 					cur = db.cursor(buffered=True)
 					cur.execute("update user_combination set book_one = %s where odd_one=%s ", (book, book_list[0],))
-					if not db:
-						db = DBO()
-						cur = db.cursor(buffered=True)
+				except Exception as e:
+					db.rollback()
+					print(str(e))
+					pass
+				finally:
+					db.commit()
+					db.close()
+				try:
+					book = book_list[3].split("-")[0]
+					
+					db = DBO()
+					cur = db.cursor(buffered=True)
+					
 					cur.execute("update user_combination set book_two = %s where odd_two=%s", (book, book_list[1],))
-					if not db:
-						db = DBO()
-						cur = db.cursor(buffered=True)
+					
+				except Exception as e:
+					db.rollback()
+					print(str(e))
+					pass
+				finally:
+					db.commit()
+					db.close()
+				try:
+					book = book_list[3].split("-")[0]
+					
+					db = DBO()
+					cur = db.cursor(buffered=True)
+					
 					cur.execute("update user_combination set book_three = %s where odd_three=%s", (book, book_list[2],))
-					if not db:
-						db = DBO()
-						cur = db.cursor(buffered=True)
 				except Exception as e:
 					db.rollback()
 					print(str(e))
