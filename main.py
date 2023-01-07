@@ -108,10 +108,15 @@ class Combine:
 					cur.execute("update user_combination set book_one = %s where odd_one=%s ", (book, book_list[0],))
 					if not db:
 						db = DBO()
+						cur = db.cursor(buffered=True)
 					cur.execute("update user_combination set book_two = %s where odd_two=%s", (book, book_list[1],))
 					if not db:
 						db = DBO()
+						cur = db.cursor(buffered=True)
 					cur.execute("update user_combination set book_three = %s where odd_three=%s", (book, book_list[2],))
+					if not db:
+						db = DBO()
+						cur = db.cursor(buffered=True)
 				except Exception as e:
 					db.rollback()
 					print(str(e))
