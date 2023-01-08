@@ -31,7 +31,7 @@ def get_code():
 	pass
 
 def DBO():
-	
+	"""
 	try:
 		db = mysql.connector.connect(host="localhost",    # your host, usually localhost
 		     user="root",         # your username
@@ -57,7 +57,7 @@ def DBO():
 
 
 	return db
-	"""
+	#"""
 def getRand(vals):
 	return random.choice(vals)
 
