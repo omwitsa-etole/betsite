@@ -212,6 +212,7 @@ cursor:pointer;
 <div class="main-body">
 {%for match in matches%}
 		{%set odds= matches.index(match)%}
+		{%if combinations[odds]%}
 		{%if combinations[odds][3] == 0 or combinations[odds][3] == '0'%}		
 		{%else%}
 			{%if match[3] == '0:00:00'%}
@@ -275,6 +276,7 @@ cursor:pointer;
 			</div>
 			</div>
 			{%endif%}
+		{%endif%}
 		{%endif%}
 {%endfor%}
 </div>

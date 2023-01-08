@@ -10,30 +10,39 @@ import datetime
 from datetime import timedelta
 import itertools
 import time
-
+import sqlite3
 app = Flask(__name__)
 app.secret_key = 'app@Betting'
 
 is_prod = os.getenv('IS_HEROKU')
 complete = 0
 print(is_prod)
+try:
+	conn = sqlite3.connect('sure-bet.sqlite3')
+	#conn.execute('CREATE TABLE IF NOT EXISTS user_combination("id" INTEGER PRIMARY KEY AUTOINCREMENT,user VARCHAR(500), odd_one VARCHAR(100) , odd_two VARCHAR(100)  ,odd_three VARCHAR(100) , result VARCHAR(100) , time TIMESTAMP default current_timestamp,book_one VARCHAR(100) ,book_two VARCHAR(100),book_three VARCHAR(100)')
+	conn.execute("""CREATE TABLE IF NOT EXISTS user_combination (id INTEGER PRIMARY KEY, user VARCHAR(500), odd_one VARCHAR(100) , odd_two VARCHAR(100)  ,odd_three VARCHAR(100) , result VARCHAR(100) , time TIMESTAMP default current_timestamp,book_one VARCHAR(100) ,book_two VARCHAR(100),book_three VARCHAR(100))""")
+	conn.close()
+except Exception as e:
+	print(str(e))
+	
 
 
 def get_code():
 	pass
 
 def DBO():
-	"""
+	
 	try:
 		db = mysql.connector.connect(host="localhost",    # your host, usually localhost
 		     user="root",         # your username
 		     passwd="root",  # your password
 		     db="askabcry_betting")
+		return db
 	except Exception as e:
 		print(str(e))
 		pass
-	"""
 	
+	"""
 	for i in range(1,7):
 		try:
 			db = mysql.connector.connect(host="192.185.81.65",    # your host, usually localhost
@@ -48,7 +57,7 @@ def DBO():
 
 
 	return db
-
+	"""
 def getRand(vals):
 	return random.choice(vals)
 
@@ -62,14 +71,19 @@ def calc(a, b, c):
 
 
 class Combine:
-	def __init__(self, markets, book_list,user):
+	def __init__(self, markets, booklist,user):
 		self.user  = user
 		self.combination = []
 		self.combination_p= []
 		self.combination_above = []
 		self.combination_above_p = []
-		self.book_list = book_list
-		
+		self.book_list = []
+	
+		for book in booklist:
+			if any(book[3] in s for s in self.book_list):
+				pass
+			else:
+				self.book_list.append(book)
 		self.min_odds = []
 		self.min_percent = 1000
 		self.markets = markets
@@ -86,9 +100,9 @@ class Combine:
 	def add_database(self,vals,m):
 		if m == "":
 			try:
-				db = DBO()
-				cur = db.cursor(buffered=True)
-				cur.execute("insert into user_combination(user,odd_one,odd_two,odd_three,result) values(%s,%s,%s,%s,%s)", (self.user,str(vals[1][0]),str(vals[1][1]),str(vals[1][2]),str(vals[0]),))
+				db = sqlite3.connect('sure-bet.sqlite3')
+				cur = db.cursor()
+				cur.execute("insert into user_combination(user,odd_one,odd_two,odd_three,result) values(?,?,?,?,?)",[self.user,str(vals[1][0]),str(vals[1][1]),str(vals[1][2]),str(vals[0])])
 				
 			except Exception as e:
 				db.rollback()
@@ -98,25 +112,37 @@ class Combine:
 				db.commit()
 				db.close()
 		if m == "one":
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			for book_list  in self.book_list:
+			try:
+				db = sqlite3.connect('sure-bet.sqlite3')
+				cur = db.cursor()
+				cur.execute("insert into user_combination(user,odd_one,odd_two,odd_three,result) values(?,?,?,?,?)", [self.user,str(vals[1][0]),str(vals[1][1]),str(vals[1][2]),str(vals[0])])
 				
+			except Exception as e:
+				db.rollback()
+				print(str(e))
+				pass
+			finally:
+				db.commit()
+				db.close()
+			for book_list in self.book_list: 
 				try:
+					db = sqlite3.connect('sure-bet.sqlite3')
+					cur = db.cursor()
 					book = book_list[3].split("-")[0]
 					
 					if not db:
-						db = DBO()
-						cur = db.cursor(buffered=True)
-					cur.execute("update user_combination set book_one = %s where odd_one=%s ", (book, book_list[0],))
-					cur.execute("update user_combination set book_two = %s where odd_two=%s", (book, book_list[1],))
-					cur.execute("update user_combination set book_three = %s where odd_three=%s", (book, book_list[2],))
+						db = sqlite3.connect('sure-bet.sqlite3')
+						cur = db.cursor()
+					cur.execute("update user_combination set book_one = ? where odd_one=? ", [book, book_list[0]])
+					cur.execute("update user_combination set book_two = ? where odd_two=?", [book, book_list[1]])
+					cur.execute("update user_combination set book_three = ? where odd_three=?", [book, book_list[2]])
 				except Exception as e:
 					db.rollback()
 					print(str(e))
 					pass
 				finally:
 					db.commit()
+					db.close()
 			#db.close()
 				
 	def getCombinations(self,ms):
@@ -210,9 +236,9 @@ def logout():
 
 def get_list(user):
 	try:
-		db = DBO()
-		cur = db.cursor(buffered=True)
-		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three from user_combination where user=%s",(user,))
+		db = sqlite3.connect('sure-bet.sqlite3')
+		cur = db.cursor()
+		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three from user_combination where user=?",[user])
 		odds = cur.fetchall()
 		return odds
 	except Exception as e:
@@ -231,6 +257,9 @@ def get_odds():
 		#cur.execute("select home_odd,draw_odd,away_odd,result,home_odd,draw_odd,away_odd from home_matches")
 		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three from user_combination where user=%s",("korg",))
 		odds = cur.fetchall()
+		if len(odds) == 0:
+			cur.execute("select home_odd,draw_odd,away_odd,result,home_odd,draw_odd,away_odd from home_matches")
+			odds = cur.fetchall()
 		return odds
 	except Exception as e:
 		db.rollback()
@@ -253,9 +282,9 @@ def home():
 	refresh = request.args.get("reload")
 	if refresh != None and session.get("user") != None:
 		try:
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("delete from user_combination where user=%s", (session["user"],))
+			db = sqlite3.connect('sure-bet.sqlite3')
+			cur = db.cursor()
+			cur.execute("delete from user_combination where user=?", [session["user"]])
 		except Exception as e:
 			db.rollback()
 			print(str(e))
@@ -263,7 +292,7 @@ def home():
 		finally:
 			db.commit()
 			db.close()
-		return redirect("/")
+		refresh = None
 			
 	if count != None:
 		country = count
@@ -273,29 +302,36 @@ def home():
 		cur = db.cursor(buffered=True)
 		cur.execute("select match_teams from home_matches")
 		matchs = cur.fetchall()
-		if session.get("user") == None:
-			cur.execute("select count(id) from user_combination where user=%s",("None",))
-		else:
-			cur.execute("select count(id) from user_combination where user=%s",(session["user"],))
-		count = cur.fetchone()[0]
-		#print(count)
-		if count == 0 or count == '0':
-			lis = MatchData(matchs)
-			match_list = lis.get_data()
-			book_list = lis.get_books()
-		
 		
 	except Exception as e:
 		print(str(e))
 		pass
 	finally:
 		db.close()	
+	try:
+		db = sqlite3.connect('sure-bet.sqlite3')
+		cur = db.cursor()
+		if session.get("user") == None:
+			cur.execute("select count(id) from user_combination where user=?",["korg"])
+		else:
+			cur.execute("select count(id) from user_combination where user=?",[session["user"]])
+		count = cur.fetchone()[0]
+		#print(count)
+		if count == 0 or count == '0':
+			lis = MatchData(matchs)
+			match_list = lis.get_data()
+			
+			book_list = lis.get_books()
+	except Exception as e:
+		print(str(e))
+		pass
+			
 	
-	if len(match_list) > 0 and session.get("user") != None:
+	if len(match_list) > 0 and len(book_list) > 0 and session.get("user") != None:
 		try:
-			db = DBO()
-			cur = db.cursor(buffered=True)
-			cur.execute("delete from user_combination where user=%s", (session["user"],))
+			db = sqlite3.connect('sure-bet.sqlite3')
+			cur = db.cursor()
+			cur.execute("delete from user_combination where user=?", [session["user"]])
 		except Exception as e:
 			db.rollback()
 			print(str(e))
@@ -306,6 +342,7 @@ def home():
 		for mat in match_list:
 			n = match_list.index(mat)
 			if mat[0] != 0:
+			
 				ck = Combine(mat,book_list[n],session["user"])
 		
 	if session.get("user") != None:
