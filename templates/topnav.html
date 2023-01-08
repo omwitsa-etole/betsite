@@ -100,7 +100,7 @@ Countries
 <a href="?time" onclick="makeActive(this.parentElement, 'null')"><i class="fa fa-clock" aria-hidden="true"></i> By Time</a>
 </div>
 <div class="time-now"><i class="fa fa-clock" aria-hidden="true"></i> <span id="time-now"></span></div>
-<div class="time-now"><a href="{{url_for('home')}}?reload"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a></div>
+<div class="time-now"><a onclick="{% if session.get("user") == None%}alert('login to refresh reaults'){%else%}location.href='/?reload'{%endif%}"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a></div>
 </div>
 
 </div>
