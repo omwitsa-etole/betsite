@@ -668,8 +668,12 @@ def gethomeMatch(match):
 			cur = db.cursor(buffered=True)
 			cur.execute("SELECT * FROM home_matches WHERE xeid=%s", (xeid,))
 			matches = cur.fetchone()
-			session["match"] = matches[1]
-			match = matches[5]
+			if matches:
+				#session["match"] = matches[1]
+				match = matches[5]
+			else:
+				match = "NOT - FOUND"
+				#session-match["match"]
 			matchteams = match
 			
 			match = match.lower()
