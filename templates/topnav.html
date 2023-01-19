@@ -7,7 +7,7 @@ Popular Leagues
 <div class="league-item">
 <h4>Football</h4>
 {%for league in leagues%}
-<a class="league-url" href="/?league={{league[4]}}">
+<a class="league-url" href="?league={{league[4]}}">
 {%set lurl = league[3]%}
 <img src="{{url_for('static', filename=lurl)}}"></img>
 <span class="league-title">{{league[1]}}</span>
@@ -19,10 +19,10 @@ Popular Leagues
 <br>
 
 <div class="leagues">
-Bookmakers
+Top Bookmakers({{session["country"]}})
 <div class="league-item">
 {%for book in bookmarks%}
-<a class="league-url" onclick="toBookmark(this.title)" title="{{book[3]}}"><span class="league-title">{{book[1]}}</span></a>
+<a class="league-url" onclick="searchBook(this.title)" title="{{book}}"><span class="league-title">{{book}}</span></a>
 {%endfor%}
 
 </div>
@@ -57,10 +57,23 @@ Countries
 		<a href="javascript:void(0)" onclick="searchBook('unibet.com')">UniBet</a>
 		<a href="javascript:void(0)" onclick="searchBook('betsafe.com')">BetSafe</a>
 		<a href="javascript:void(0)" onclick="searchBook('betking.com')">BetKing</a>
-		<a href="javascript:void(0)" onclick="searchBookmark('1xbit')">1xbit</a>
-		<a href="javascript:void(0)" onclick="searchBookmark('1xbet')">1xbet</a>
-		<a href="javascript:void(0)" onclick="searchBookmark('10x10bet')">10x10bet</a>
-		<a href="javascript:void(0)" onclick="searchBookmark('bet365')">Bet365</a>
+		<a href="javascript:void(0)" onclick="searchBook('1xbit.com')">1xbit</a>
+		<a href="javascript:void(0)" onclick="searchBook('1xbet.com')">1xbet</a>
+		<a href="javascript:void(0)" onclick="searchBook('mozzart.com')">Mozzartbet</a>
+		<a href="javascript:void(0)" onclick="searchBook('22bet.com')">22bet</a>
+		<a href="javascript:void(0)" onclick="searchBook('betwinner.com')">Betwinner</a>
+		<a href="javascript:void(0)" onclick="searchBook('betika.com')">Betika</a>
+		<a href="javascript:void(0)" onclick="searchBook('888bet.com')">888bet</a>
+		<a href="javascript:void(0)" onclick="searchBook('bet365.com')">Bet365</a>
+		<a href="javascript:void(0)" onclick="searchBook('betway.com')">Betway</a>
+		<a href="javascript:void(0)" onclick="searchBook('bet9ja.com')">Bet9ja</a>
+		<a href="javascript:void(0)" onclick="searchBook('wazobet.com')">Wazobet</a>
+		<a href="javascript:void(0)" onclick="searchBook('yangasport.com')">YangaSport</a>
+		<a href="javascript:void(0)" onclick="searchBook('wazobet.com')">Melbet</a>
+		<a href="javascript:void(0)" onclick="searchBook('accessbet.com')">Accessbet</a>
+		<a href="javascript:void(0)" onclick="searchBook('chezacash.com')">Chezacash</a>
+		<a href="javascript:void(0)" onclick="searchBook('10x10bet.com')">10x10bet</a>
+		
 		<a href="javascript:void(0)" onclick="searchBookmark('bet-at-home')">Bet-at-home</a>
 		<a href="javascript:void(0)" onclick="searchBookmark('williamhill')">Williamhill</a>
 		<a href="javascript:void(0)" onclick="searchBookmark('pinnacle')">Pinnacle</a>
@@ -77,8 +90,8 @@ Countries
 </div>
 <div class="top-nav-b">
 <div class="l">
-<div class="h-ome" onclick="location.href='{{url_for("home")}}'">
-<a href="{{url_for('home')}}"><i class="fa fa-home" aria-hidden="true"></i></a>
+<div class="h-ome" onclick="location.href='{{url_for('land',md=session["country"])}}'">
+<a href="{{url_for('land',md=session["country"])}}"><i class="fa fa-home" aria-hidden="true"></i></a>
 </div>
 <div class="book-makers" id="bookm-makers" onclick="makeActive(this, 'book-makers')">
 <a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'book-makers')"><i class="fa fa-futbol-o" aria-hidden="true"></i> Bookmakers <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -90,17 +103,18 @@ Countries
 <a style="position:asolute;right:0;top: 0;cursor:pointer;color:red;" onclick="this.parentElement.style.display='none'"><i class="fa fa-times"></i></a>
 <input id="search-books" placeholder="search country"  onkeyup="filterCountries()">
 <div class="drop-list" id="book-list">
-
+<button onclick="location.href='{{url_for("land",md="KE")}}'"><span>KE</span></button>
+<button onclick="location.href='{{url_for("land",md="NG")}}'"><span>NG</span></button>
 </div>
 <div class="drop-btm">
-<a>All bookmakers</a> 
+<a href='{{url_for("land",md="AL")}}'>All bookmakers</a> 
 </div>
 </div>
 <div class="by-time" onclick="" id="by-time">
 <a href="?time" onclick="makeActive(this.parentElement, 'null')"><i class="fa fa-clock" aria-hidden="true"></i> By Time</a>
 </div>
 <div class="time-now"><i class="fa fa-clock" aria-hidden="true"></i> <span id="time-now"></span></div>
-<div class="time-now"><a onclick="{% if session.get("user") == None%}alert('login to refresh reaults'){%else%}location.href='/?reload'{%endif%}"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a></div>
+<div class="time-now"><a onclick="{% if session.get("user") == None%}alert('login to refresh reaults'){%else%}location.href='?reload'{%endif%}"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a></div>
 </div>
 
 </div>

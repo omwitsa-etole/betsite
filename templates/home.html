@@ -196,7 +196,7 @@ cursor:pointer;
 </div>
 {%else%}
 <div class="login-content">
-	<a href="/?login"">Log in</a>
+	<a href="?login"">Log in</a>
 	<a>Sign Up</a>
 </div>
 {%endif%}
@@ -213,8 +213,8 @@ cursor:pointer;
 {%for match in matches%}
 		{%set odds= matches.index(match)%}
 		{%if combinations[odds]%}
-		{%if combinations[odds][3] == 0 or combinations[odds][3] == '0'%}		
-		{%else%}
+		{% if combinations[odds][7] == match[1] %}
+			
 			{%if match[3] == '0:00:00'%}
 			{%else%}
 			{%set m = match[5].split(" - ")%}
@@ -451,13 +451,17 @@ function calcM(){
 	if(parseInt(stake) > 0){
 		
 		let v = document.getElementById("stake-result").value;
+		let y =v-profit;
+		console.log(y);
+		y = parseFloat(y).toFixed(4);
 		v = parseFloat(v).toFixed(4);
 		let h_d = v*((1/h)*100)/100;
 		let d_d = v*((1/d)*100)/100;
 		let a_d = v*((1/a)*100)/100;
-		stake_h.innerText = parseFloat(h_d).toFixed(4);
-		stake_d.innerText = parseFloat(d_d).toFixed(4);
-		stake_a.innerText = parseFloat(a_d).toFixed(4);
+		console.log(h_d);console.log(d_d);console.log(a_d);
+		stake_h.innerText = parseFloat(h_d).toFixed(2);
+		stake_d.innerText = parseFloat(d_d).toFixed(2);
+		stake_a.innerText = parseFloat(a_d).toFixed(2);
 		
 		resultsM();
 	}

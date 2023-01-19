@@ -212,9 +212,9 @@ body{
 			<a href="{{url_for('gethomeMatch', match=match[4])}}">{{match_teams}}</a>
 			</div>
 			<div class="bet-odds" id="{{match[0]}}">
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}<p class="odd-mkt">{{match[13]}}</p></button></span>
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}<p class="odd-mkt">{{match[14]}}</p></button></span>
-			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}<p class="odd-mkt">{{match[15]}}</p></button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(1) {{match[6]}}</button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(X) {{match[7]}}</button></span>
+			<span class="b-odds"><button onclick="selectB(this, this.parentElement.id)">(2) {{match[8]}}</button></span>
 			</div>
 		</div>	
 		{%endfor%}
