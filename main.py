@@ -206,7 +206,7 @@ class Combine:
 						
 						p = val*100
 						if 100-p >= self.max_percent:
-							print("here = "+str(val))
+							#print("here = "+str(val))
 							self.max_percent = 100-p
 							self.max_odds = m
 						#print(self.markets)
@@ -1040,7 +1040,7 @@ class MatchData:
 							self.book_list.append([bookmarks,xeid])
 					
 				
-				print(bookmarks)
+				#print(bookmarks)
 				#print(self.book_list[0])
 			except Exception as e:
 				db.rollback();print(str(e))
