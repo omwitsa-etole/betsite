@@ -315,6 +315,8 @@ def get():
 @app.route("/")
 def home():
 	country = get()
+	if country != "KE" or country != "NG" or country != "AL":
+		country = "KE"
 	session["country"] = country
 	return redirect("/home/"+str(country))
 
