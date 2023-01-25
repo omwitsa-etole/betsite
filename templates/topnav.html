@@ -7,7 +7,7 @@ Popular Leagues
 <div class="league-item">
 <h4>Football</h4>
 {%for league in leagues%}
-<a class="league-url" href="?league={{league[4]}}">
+<a class="league-url" onclick="filterLeague('{{league[4]}}')">
 {%set lurl = league[3]%}
 <img src="{{url_for('static', filename=lurl)}}"></img>
 <span class="league-title">{{league[1]}}</span>
@@ -91,7 +91,7 @@ Countries
 <div class="top-nav-b">
 <div class="l">
 <div class="h-ome" onclick="location.href='{{url_for('land',md=session["country"])}}'">
-<a href="{{url_for('land',md=session["country"])}}"><i class="fa fa-home" aria-hidden="true"></i></a>
+<a href="{{url_for('land',md=session["country"])}}?page=1"><i class="fa fa-home" aria-hidden="true"></i></a>
 </div>
 <div class="book-makers" id="bookm-makers" onclick="makeActive(this, 'book-makers')">
 <a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'book-makers')"><i class="fa fa-futbol-o" aria-hidden="true"></i> Bookmakers <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -114,7 +114,7 @@ Countries
 <a href="?time" onclick="makeActive(this.parentElement, 'null')"><i class="fa fa-clock" aria-hidden="true"></i> By Time</a>
 </div>
 <div class="time-now"><i class="fa fa-clock" aria-hidden="true"></i> <span id="time-now"></span></div>
-<div class="time-now"><a onclick="{% if session.get("user") == None%}alert('login to refresh reaults'){%else%}location.href='?reload'{%endif%}"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a></div>
+<div class="time-now"><a onclick="{% if session.get("user") == None%}alert('login to refresh reaults'){%else%}nextPage(){%endif%}"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a></div>
 </div>
 
 </div>

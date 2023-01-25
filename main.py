@@ -132,21 +132,27 @@ class Combine:
 				db.commit()
 				db.close()
 			used = []
+			db = sqlite3.connect('sure-bet.sqlite3')
+			cur = db.cursor()
 			for book_list in self.book_list: 
+				#print(book_list)
 				try:
-					db = sqlite3.connect('sure-bet.sqlite3')
-					cur = db.cursor()
+					if db == None:
+						db = sqlite3.connect('sure-bet.sqlite3')
+						cur = db.cursor()
 					book = book_list[3]
 					try:
 						book = book_list[3].split("-")[0]
 					except:
 						pass
-					if book not in used:
+					if book:
 						#if 'sportybet.com' in book or 'dafabet.com' in book or 'betsafe.com' in book or 'betking.com' in book:
-						if not db:
-							db = sqlite3.connect('sure-bet.sqlite3')
-							cur = db.cursor()
-						
+						cur.execute("select * from user_combination where result != 0 and result != '0' and book_one is null or book_two is null or book_three is null")
+						cnt = cur.fetchone()
+						if cnt:
+							pass
+						else:
+							break
 						cur.execute("update user_combination set book_one = ? where odd_one like ? and match=? and user=?", [book, "%"+book_list[0]+"%",self.match,self.user])
 						
 						cur.execute("update user_combination set book_two = ? where odd_two like ? and match=? and user=?", [book, "%"+book_list[1]+"%",self.match,self.user])
@@ -160,7 +166,7 @@ class Combine:
 					pass
 				finally:
 					db.commit()
-					db.close()
+					#db.close()
 			#db.close()
 			#print(used)	
 	def getCombinations(self,ms):
@@ -169,9 +175,11 @@ class Combine:
 		self.max_odds = []
 		ls = ms
 		l = ls
+		ls = []
 		cn = getPower(len(l))
-		while True:
-
+		sz = 0
+		while sz <= 3000:
+			#print(sz)
 			if len(ls) >= cn:
 				break
 			for i in range(0,len(l)):
@@ -192,13 +200,14 @@ class Combine:
 				z = getRand(l2)
 				m = [x,y,z]
 				ls.append(m)
-		
+				sz = sz+1
 				try:
+					
 					res = []
 					a = x
 					b = y
 					c = z
-					val = calc(float(a),float(b),float(c))
+					val = calc(float(a[0:3]),float(b[0:3]),float(c[0:3]))
 					#print(val)
 					if val <= 1:
 						
@@ -206,7 +215,7 @@ class Combine:
 						
 						p = val*100
 						if 100-p >= self.max_percent:
-							#print("here = "+str(val))
+							print("here = "+str(val))
 							self.max_percent = 100-p
 							self.max_odds = m
 						#print(self.markets)
@@ -265,11 +274,14 @@ def get_list(user):
 	try:
 		db = sqlite3.connect('sure-bet.sqlite3')
 		cur = db.cursor()
-		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three,match from user_combination where user=? and result != '0' and result != 0 ",[user])
+		cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three,match from user_combination where user=? and result != '0' and result != 0 ",[user])#and book_one is not null and book_two is not null and book_three is not null
 		odds = cur.fetchall()
+		#"""
 		if len(odds) == 0:
-			cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three,match from user_combination where user=?",[user])
-			odds = cur.fetchall()
+			#cur.execute("select odd_one,odd_two,odd_three,result,book_one,book_two,book_three,match from user_combination where user=?",[user])
+			#odds = cur.fetchall()
+			odds = 0
+		#"""
 		return odds
 	except Exception as e:
 		db.rollback()
@@ -312,13 +324,20 @@ def get():
 
 	return country
 
+@app.route("/api/request/<mode>")
+def api(mode):
+	if mode == "nextPage":
+		if request.method == "POST":
+			pass
+
 @app.route("/")
 def home():
-	country = get()
+	#country = get()
+	country = "KE"
 	if country != "KE" or country != "NG" or country != "AL":
 		country = "KE"
 	session["country"] = country
-	return redirect("/home/"+str(country))
+	return redirect("/home/"+str(country)+"/?page=1")
 
 @app.route("/home/<md>/", methods=['GET'])
 def land(md):
@@ -328,10 +347,22 @@ def land(md):
 		return redirect("/")
 
 	country = md
-	refresh = request.args.get("reload")
+	page = request.args.get("page")
+	if page == None:
+		page = "1"
+		session["page"] = page
+	else:
+		try:
+			page = int(page)
+			page = str(page)
+			session["page"] = page
+		except:
+			pass
 	if md != session["country"]:
 		session["country"] = md
-		refresh = True
+		page = "1"
+		session["page"] = page
+		#refresh = None
 	print(session["country"])
 	match_list = []
 	league = request.args.get("league")
@@ -340,7 +371,7 @@ def land(md):
 	#league = session.get("league")
 	count = request.args.get("filter")
 	
-	if refresh != None and session.get("user") != None:
+	if page != None and session.get("user") != None:
 		try:
 			db = sqlite3.connect('sure-bet.sqlite3')
 			cur = db.cursor()
@@ -352,10 +383,12 @@ def land(md):
 		finally:
 			db.commit()
 			db.close()
+		"""
 		if league == None:
 			return redirect("/home/"+session["country"])
 		else:
 			return redirect("/home/"+session["country"]+"/?league="+league)
+		
 	if league != None:
 		try:
 			db = sqlite3.connect('sure-bet.sqlite3')
@@ -367,25 +400,56 @@ def land(md):
 			pass
 		finally:
 			db.commit()
-			db.close()	
+			db.close()
+	"""	
 	if count != None:
 		country = count
 	time_filter = request.args.get("time")
-	try:
-		db = DBO()
-		cur = db.cursor(buffered=True)
-		if league != None:
-			cur.execute("select xeid,match_teams from home_matches where league=%s",(league,))
-			matchs = cur.fetchall()
-		else:
-			cur.execute("select xeid,match_teams from home_matches")
-			matchs = cur.fetchall()
-		
-	except Exception as e:
-		print(str(e))
-		pass
-	finally:
-		db.close()	
+	if session["page"] != None:	
+		print(session["page"])
+		page = session["page"]
+		try:
+			db = DBO()
+			cur = db.cursor(buffered=True)
+			if league != None:
+				cur.execute("select xeid,match_teams from home_matches where league like %s",("%"+league+"%",))
+				matchs = cur.fetchall()
+			else:
+				cur.execute("select xeid,match_teams from home_matches")
+				matchs = cur.fetchall()
+
+			if page == "1":
+				matchs = matchs[0:5]
+			elif page == "2":
+				matchs = matchs[6:11]
+			elif page == "3":
+				matchs = matchs[12:18]
+			elif page == "4":
+				matchs = matchs[19:27]
+			elif page == "5":
+				matchs = matchs[28:34]
+			elif page == "6":
+				matchs = matchs[35:41]
+			elif page == "7":
+				matchs = matchs[42:48]
+			elif page == "8":
+				matchs = matchs[49:55]
+			elif page == "9":
+				matchs = matchs[56:62]
+			elif page == "10":
+				matchs = matchs[63:69]
+			elif page == "11":
+				matchs = matchs[70:76]
+			elif page == "12":
+				matchs = matchs[77:83]
+			else:
+				matchs = matchs[84:90]
+			print(len(matchs))
+		except Exception as e:
+			print(str(e))
+			pass
+		finally:
+			db.close()	
 	try:
 		db = sqlite3.connect('sure-bet.sqlite3')
 		cur = db.cursor()
@@ -398,9 +462,9 @@ def land(md):
 		if count == 0 or count == '0':
 			#print(matchs)
 			lis = MatchData(matchs,session["country"])
-			match_list = lis.get_data()
+			match_list = lis.get_data()[0:6]
 			
-			book_list = lis.get_books()
+			book_list = lis.get_books()[0:6]
 			#print(book_list)
 	except Exception as e:
 		print(str(e))
@@ -434,6 +498,22 @@ def land(md):
 		
 	if session.get("user") != None:
 		combinations = get_list(session["user"])
+		if combinations == 0:
+			s = session["page"]
+			if int(s) >= 14:
+				return redirect("/home/"+session["country"]+"/na")
+			s = int(s)+1	
+			
+			if league == None:
+				if s > 13:
+					s = 14
+				return redirect("/home/"+session["country"]+"/?page="+str(s))	
+			else:
+				if s > 13:
+					s = 1
+					return redirect("/home/"+session["country"]+"/?page="+str(s))
+				return redirect("/home/"+session["country"]+"/?league="+league+"&&page="+str(s))		
+			#return redirect()
 		#best_today = best_today(session["user"])
 	else:
 		combinations = get_odds()
@@ -493,6 +573,13 @@ def land(md):
 	#matches = []
 	return render_template("home.html", **locals())
 
+@app.route("/home/<md>/na")
+def noMatch(md):
+	if md:
+		page = request.args.get("page")
+		if page != None:
+			return redirect("/home/"+session["country"]+"/?page=1")	
+		return render_template("nomatch.html")
 @app.route("/calculator")
 def getCalc():
 	match = request.args.get("match")
@@ -714,8 +801,7 @@ def search():
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM home_matches where match_teams LIKE %s", (match, ))
-			home_matches = cur.fetchall()
+			
 			cur.execute("SELECT * FROM bookmark_matches where match_teams LIKE %s", (match, ))
 			matches = cur.fetchall()
 			
@@ -730,8 +816,7 @@ def search():
 		try:
 			db = DBO()
 			cur = db.cursor(buffered=True)
-			cur.execute("SELECT * FROM home_matches where league LIKE %s or league like %s", (league, ll, ))
-			home_matches = cur.fetchall()
+			
 			cur.execute("SELECT * FROM bookmark_matches where league LIKE %s", (league, ))
 			matches = cur.fetchall()
 			
@@ -962,8 +1047,9 @@ class MatchData:
 		self.market_odds = []
 		self.book_list = []
 		for match in self.matches:
-			#print(match[0])
-			self.reloadOne(match[0],match[1])
+			#print(match[1])		
+			if "Home" not in match[1]:
+				self.reloadOne(match[0],match[1])
 		
 			
 	def get_books(self):
@@ -1029,7 +1115,7 @@ class MatchData:
 				
 				db = DBO()
 				cur = db.cursor(buffered=True)
-				cur.execute("select home_odd,draw_odd,away_odd,bookmark FROM bookmark_matches where {0}=1 and home_team like %s and away_team like %s or {0}=1 and home_team like %s and away_team like %s or {0}=1 and home_team like %s and away_team like %s or {0}=1 and home_team like %s and away_team like %s ".format(self.country),(home,away,home_team,away_team,home_t,away_t,home_h,away_h,))
+				cur.execute("select home_odd,draw_odd,away_odd,bookmark FROM bookmark_matches where {0}=1 and home_team like %s and away_team like %s and home_odd != '-' and draw_odd !='-' and away_odd !='-' or {0}=1 and home_team like %s and away_team like %s and home_odd != '-' and draw_odd !='-' and away_odd !='-' or {0}=1 and home_team like %s and away_team like %s and home_odd != '-' and draw_odd !='-' and away_odd !='-' or {0}=1 and home_team like %s and away_team like %s and home_odd != '-' and draw_odd !='-' and away_odd !='-'".format(self.country),(home,away,home_team,away_team,home_t,away_t,home_h,away_h,))
 				bookmarks = cur.fetchall()
 				#cur.execute("SELECT home_odd,draw_odd,away_odd,bookmark FROM bookmark_matches where home_team like %s and away_team like %s or home_team like %s and away_team like %s or home_team like %s and away_team like %s or home_team like %s and away_team like %s ",(home,away,home_team,away_team,home_t,away_t,home_h,away_h,))
 				#bookmarks = cur.fetchall()

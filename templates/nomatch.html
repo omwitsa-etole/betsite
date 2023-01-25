@@ -210,75 +210,7 @@ cursor:pointer;
 	
 </div>
 <div class="main-body">
-{%for match in matches%}
-		{%set odds= matches.index(match)%}
-		{%if combinations[odds]%}
-		{% if combinations[odds][7] == match[1] %}
-			
-			{%if match[3] == '0:00:00'%}
-			{%else%}
-			{%set m = match[5].split(" - ")%}
-			{%set home_team = match[17]%}
-			{%set away_team = match[18]%}
-			{%if home_team == ""%}
-				
-				{%set home_team = m[0]%}
-			{%endif%}
-			{%if match[18] == ""%}
-				{%set away_team = m[1]%}
-			{%endif%}
-			{%set m_date = match[2]%}
-			<div class="match-box">
-			<div class="match-l">
-			<a style="display:none;">League: {{match[0]}}</a>
-			<a>Time: {{match[3]}} </a>
-			<div style="margin-left: 5%;"  onclick="location.href='{{url_for("gethomeMatch", match=match[4])}}'">
-			<p>{{home_team}}</p>
-			<p>{{away_team}}</p>
-			</div>
-			<div style="position: absolute;bottom: 1%;">  <a>Date: {{m_date}}</a></div>
-			</div>
-			<div class="match-r">
-			{%if combinations[odds][0] != combinations[odds][4]%}
-				<div class="matchodd">
-				1
-				<p>{{combinations[odds][0]}}</p>
-				<div class="odd-mkt">{{combinations[odds][4]}}</div>
-				</div>
-				<div class="matchodd">
-				x
-				<p>{{combinations[odds][1]}}</p>
-				<div class="odd-mkt">{{combinations[odds][5]}}</div>
-				</div>
-				<div class="matchodd">
-				2
-				<p>{{combinations[odds][2]}}</p>
-				<div class="odd-mkt">{{combinations[odds][6]}}</div>
-				</div>
-			{%else%}
-			<div style="height: 90%;box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;margin-top: 1.5%;text-align: center;width: 80%;">Login To View Odds</div>
-			{%endif%}
-			</div>
-			<div class="go-calc">
-			
-			{%set odd = combinations[odds][3]%}
-			{%set home_odd = combinations[odds][0]%}
-			{%set draw_odd = combinations[odds][1]%}
-			{%set away_odd = combinations[odds][2]%}
-			{%set home_mkt = combinations[odds][4]%}
-			{%set draw_mkt = combinations[odds][5]%}
-			{%set away_mkt = combinations[odds][6]%}
-			{%if odd == '0.1'%}
-			Percentage Profit:  login<span style="float:right;height: 100%;width: 30%;text-align: right;"><button onclick="calculateM()">calculator</button></span>
-			{%else%}
-			Percentage Profit:  {{'%.2f'|format(odd|float)}}<span style="float:right;height: 100%;width: 30%;text-align: right;"><button onclick="calculateM('{{match[5]}}','{{odd}}','{{home_odd}}','{{draw_odd}}','{{away_odd}}','{{home_mkt}}','{{draw_mkt}}','{{away_mkt}}')">calculator</button></span>
-			{%endif%}
-			</div>
-			</div>
-			{%endif%}
-		{%endif%}
-		{%endif%}
-{%endfor%}
+<p>No Macthes Available</p>
 </div>
 
 <div style="position: fixed;z-index: 200;width: 100%;height: 100%;top: 0;left: 0;display: none;" id="form-l">
