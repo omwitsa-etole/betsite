@@ -215,7 +215,7 @@ class Combine:
 						
 						p = val*100
 						if 100-p >= self.max_percent:
-							print("here = "+str(val))
+							#print("here = "+str(val))
 							self.max_percent = 100-p
 							self.max_odds = m
 						#print(self.markets)
@@ -922,6 +922,10 @@ def gethomeMatch(match):
 			match_check = match.split("-")
 			if "atl" in match:
 				match = match.replace("atl", "atletico")
+			if "real valladolid" in match:
+				match = match.replace("real valladolid", "valladolid")
+			if "ath" in match:
+				match = match.replace("ath", "athletic")
 			if "wolverhampton" in match:
 				match = match.replace("wolverhampton", "wolves")
 			if "utd" in match:
@@ -1059,7 +1063,11 @@ class MatchData:
 	def Checkmatch(self,match):
 		
 		if "atl" in match:
-				match = match.replace("atl", "atletico")
+			match = match.replace("atl", "atletico")
+		if "real valladolid" in match:
+			match = match.replace("real valladolid", "valladolid")
+		if "ath" in match:
+			match = match.replace("ath", "athletic")
 		if "wolverhampton" in match:
 			match = match.replace("wolverhampton", "wolves")
 		if "utd" in match:
@@ -1099,10 +1107,10 @@ class MatchData:
 			
 			home_h = match[0]
 			away_h = match[-1]
-			home = prevmatch[0][1:6]
-			away= prevmatch[-1][1:7]
-			home_team = match[0][1:6]
-			away_team = match[-1][1:7]
+			home = prevmatch[0][1:5]
+			away= prevmatch[-1][1:5]
+			home_team = match[0][1:5]
+			away_team = match[-1][1:5]
 			home = "%"+home+"%"
 			away = "%"+away+"%"
 			home_team = "%"+home_team+"%"
