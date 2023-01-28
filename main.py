@@ -419,13 +419,13 @@ def land(md):
 				matchs = cur.fetchall()
 
 			if page == "1":
-				matchs = matchs[0:5]
+				matchs = matchs[0:7]
 			elif page == "2":
-				matchs = matchs[6:11]
+				matchs = matchs[8:14]
 			elif page == "3":
-				matchs = matchs[12:18]
+				matchs = matchs[15:20]
 			elif page == "4":
-				matchs = matchs[19:27]
+				matchs = matchs[21:27]
 			elif page == "5":
 				matchs = matchs[28:34]
 			elif page == "6":
@@ -439,11 +439,13 @@ def land(md):
 			elif page == "10":
 				matchs = matchs[63:69]
 			elif page == "11":
-				matchs = matchs[70:76]
+				matchs = matchs[70:78]
 			elif page == "12":
-				matchs = matchs[77:83]
+				matchs = matchs[79:87]
+			elif page == "15":
+				matchs = matchs[100:]
 			else:
-				matchs = matchs[84:90]
+				matchs = matchs[88:100]
 			print(len(matchs))
 		except Exception as e:
 			print(str(e))
@@ -509,9 +511,9 @@ def land(md):
 					s = 14
 				return redirect("/home/"+session["country"]+"/?page="+str(s))	
 			else:
-				if s > 13:
-					s = 1
-					return redirect("/home/"+session["country"]+"/?page="+str(s))
+				if s > 15:
+					
+					return redirect("/home/"+session["country"]+"/na")
 				return redirect("/home/"+session["country"]+"/?league="+league+"&&page="+str(s))		
 			#return redirect()
 		#best_today = best_today(session["user"])

@@ -18,7 +18,7 @@ Popular Leagues
 
 <br>
 
-<div class="leagues">
+<div class="leagues" style="">
 Top Bookmakers({{session["country"]}})
 <div class="league-item">
 {%for book in bookmarks%}
@@ -31,6 +31,8 @@ Top Bookmakers({{session["country"]}})
 <div class="legues">
 Countries
 <div class="league-item">
+<a class="league-url" onclick="location.href='{{url_for("land",md="KE")}}'">Kenya</a>
+<a class="league-url" onclick="location.href='{{url_for("land",md="NG")}}'">Nigeria</a>
 </div>
 </div>
 
@@ -93,7 +95,7 @@ Countries
 <div class="h-ome" onclick="location.href='{{url_for('land',md=session["country"])}}'">
 <a href="{{url_for('land',md=session["country"])}}?page=1"><i class="fa fa-home" aria-hidden="true"></i></a>
 </div>
-<div class="book-makers" id="bookm-makers" onclick="makeActive(this, 'book-makers')">
+<div class="book-makers" id="bookm-makers" >
 <a href="javascript:void(0)" onclick="makeActive(this.parentElement, 'book-makers')"><i class="fa fa-futbol-o" aria-hidden="true"></i> Bookmakers <i class="fa fa-caret-down" aria-hidden="true"></i>
 <span id="book-filter"></span>
 </a>

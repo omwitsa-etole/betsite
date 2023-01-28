@@ -196,7 +196,7 @@ cursor:pointer;
 </div>
 {%else%}
 <div class="login-content">
-	<a href="?login"">Log in</a>
+	<a onclick="location.search='login'">Log in</a>
 	<a>Sign Up</a>
 </div>
 {%endif%}
@@ -400,30 +400,34 @@ function dragElement(elmnt) {
   }
 }
 function calculateM(teams,per,home,draw,away,hm,dm,am){
-	console.log(per)
-	let percent = parseFloat(per);
-	percent = percent.toFixed(4);
-	home = parseFloat(home);
-	draw = parseFloat(draw);
-	away = parseFloat(away);
-	var x=document.getElementById("mydiv").style.display='block';
-	document.getElementById("r-teams").innerText = teams;
-	var p = document.getElementById("percent");
-	var h = document.getElementById("home_odd");
-	var d = document.getElementById("draw_odd");
-	var a = document.getElementById("away_odd");
-	var h_m = document.getElementById("home_mkt");
-	var d_m = document.getElementById("draw_mkt");
-	var a_m = document.getElementById("away_mkt");
-	p.innerText = percent;
-	document.getElementById("result-profit").innerText = percent;
-	h.innerText = home;
-	d.innerText = draw;
-	a.innerText = away;
-	h_m.innerText = hm;
-	d_m.innerText = dm;
-	a_m.innerText = am;
-	calcM();
+	{%if session.get("user") == None%}
+		alert("login for calculations");
+	{%else%}
+		//console.log(per)
+		let percent = parseFloat(per);
+		percent = percent.toFixed(4);
+		home = parseFloat(home);
+		draw = parseFloat(draw);
+		away = parseFloat(away);
+		var x=document.getElementById("mydiv").style.display='block';
+		document.getElementById("r-teams").innerText = teams;
+		var p = document.getElementById("percent");
+		var h = document.getElementById("home_odd");
+		var d = document.getElementById("draw_odd");
+		var a = document.getElementById("away_odd");
+		var h_m = document.getElementById("home_mkt");
+		var d_m = document.getElementById("draw_mkt");
+		var a_m = document.getElementById("away_mkt");
+		p.innerText = percent;
+		document.getElementById("result-profit").innerText = percent;
+		h.innerText = home;
+		d.innerText = draw;
+		a.innerText = away;
+		h_m.innerText = hm;
+		d_m.innerText = dm;
+		a_m.innerText = am;
+		calcM();
+	{%endif%}
 }
 function calcM(){
 	var stake = document.getElementById("stake-input").value;

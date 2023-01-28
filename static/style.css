@@ -2,11 +2,12 @@
 .top-nav{
 	position: relative;
 	width: 100%;
+	margin-left:;
 	background: black;
 	color: white;
 	font-size: 14px;
 	border-radius: 10px;
-	height: 150px;
+	min-height: 150px;
 }
 .top-nav-a{
 	position: absolute;
@@ -547,11 +548,11 @@
 }
 .match-box{
         margin-bottom: 50px;
-	width: 95%;
+	width: 92.5%;
 	margin-left: 2.5%;
 	margin-top: 15px;
 	min-height: 120px;
-	border-radius: 10px;
+	
 	background: white;
 	position: relative;
 	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
@@ -610,7 +611,6 @@
 	background: blue;
 	color:white;
 	text-align: left;
-	border-radius: 10px;
 }
 .go-calc button{
 		height:100%;
@@ -620,11 +620,14 @@
 		
 	}
 @media only screen and (max-width: 800px) {
+	
 	.best-results{display:none;}
 	.results{
 		
 		width: 90%;
 		left: 5%;
+		top: 5%;
+		z-index: 1000;
 	}
 	.b-ody{
 		margin-left: 0;
